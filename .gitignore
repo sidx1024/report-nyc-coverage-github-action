@@ -105,3 +105,6 @@ typings/
 # IDE
 .idea
 .vscode
+
+# file generated for local testing
+sample-output.json
