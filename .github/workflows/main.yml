@@ -12,4 +12,6 @@ jobs:
           coverage-output-directory: 'sample-coverage-output'
       # Use the output from the `hello` step
       - name: Get the output time
-        run: echo "total_lines_coverage_percent ${{ steps.hello.outputs.total_lines_coverage_percent }}"
+        run: |
+          echo "total_lines_coverage_percent ${{ steps.hello.outputs.total_lines_coverage_percent }}"
+          echo "comment_body ${{ steps.hello.outputs.comment_body }}"
