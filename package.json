@@ -7,6 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "ncc build index.js --license licenses.txt"
   },
+  "engines": {
+    "node": ">=16.9.0"
+  },
+  "engineStrict": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sidx1024/coverage-reporter-action.git"
@@ -23,6 +27,7 @@
     "@actions/github": "^5.0.0"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.33.3"
+    "@vercel/ncc": "^0.33.3",
+    "parse-lcov": "^1.0.4"
   }
 }
