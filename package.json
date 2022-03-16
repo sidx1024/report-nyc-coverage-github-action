@@ -28,6 +28,12 @@
   },
   "devDependencies": {
     "@vercel/ncc": "^0.33.3",
-    "parse-lcov": "^1.0.4"
+    "parse-lcov": "^1.0.4",
+    "prettier": "^2.6.0",
+    "lint-staged": "^11.0.0",
+    "husky": "^6.0.0"
+  },
+  "lint-staged": {
+    "*.{js,md,json,yml}": "prettier --write"
   }
 }
