@@ -69,17 +69,19 @@ async function run() {
 async function getGitDiff() {
   console.log('github.context.payload.pull_request', github.context.payload.pull_request);
 
+  const { base, head } = github.context.payload.pull_request;
+
   console.log(
     'gitdiff normal',
     await exec.exec(
-      `git diff --name-only --diff-filter=ACMRT ${github.event.pull_request.base.sha} ${github.sha} | xargs`,
+      `git diff --name-only --diff-filter=ACMRT ${base.sha} ${head.sha} | xargs`,
     ),
   );
 
   console.log(
     'gitdiff without xargs',
     await exec.exec(
-      `git diff --name-only --diff-filter=ACMRT ${github.event.pull_request.base.sha} ${github.sha}`,
+      `git diff --name-only --diff-filter=ACMRT ${base.sha} ${head.sha}`,
     ),
   );
 }
