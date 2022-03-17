@@ -14,14 +14,18 @@ function formatFilesCoverageDataToHTMLTable(changedFilesCoverageData, options = 
   const rows = changedFilesCoverageData.map(([file, data]) => {
     return [
       file,
-      statements && data.statements.pct,
-      branches && data.branches.pct,
-      functions && data.functions.pct,
-      lines && data.lines.pct,
-    ].filter(v => v || v === 0);
+      statements && addPercentSignOrReturnEmptyString(data.statements.pct),
+      branches && addPercentSignOrReturnEmptyString(data.branches.pct),
+      functions && addPercentSignOrReturnEmptyString(data.functions.pct),
+      lines && addPercentSignOrReturnEmptyString(data.lines.pct),
+    ].filter(Boolean);
   });
 
   return createHTMLTableFromArray([headers, ...rows]);
+}
+
+function addPercentSignOrReturnEmptyString(input) {
+  return Number.isFinite(input) ? input + '%' : '';
 }
 
 module.exports = {
