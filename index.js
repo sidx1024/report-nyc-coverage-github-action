@@ -41,7 +41,7 @@ async function run() {
   };
 
   console.log('Done creating tokenMap', tokenMap);
-
+ // t1
   console.log('github.context', github.context);
   console.log('github.event', github.event);
 
