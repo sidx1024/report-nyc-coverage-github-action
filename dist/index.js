@@ -9983,7 +9983,6 @@ async function run() {
     ),
   };
 
-
   const gitHubToken = core.getInput('github_token').trim();
   if (gitHubToken !== '' && github.context.eventName === 'pull_request') {
     const commentTemplateMDPath = path.resolve(DEFAULT_COMMENT_TEMPLATE_MD_FILENAME);
@@ -10005,16 +10004,36 @@ async function run() {
 }
 
 async function getGitDiff() {
-  console.log('github.context.payload.pull_request', github.context.payload.pull_request);
-
   const { base, head } = github.context.payload.pull_request;
-
-  console.log(
-    'gitdiff without xargs',
-    await exec.exec(
-      `git diff --name-only --diff-filter=ACMRT ${base.sha} ${head.sha}`,
-    ),
+  const { exitCode, output } = await executeCommand(
+    `git diff --name-only --diff-filter=ACMRT ${base.sha} ${head.sha}`,
   );
+  if (exitCode === 0) {
+    console.log(output);
+  } else {
+    console.error('An error occurred while executing command.', {
+      exitCode,
+      output,
+    });
+  }
+}
+
+async function executeCommand(command) {
+  let output = '';
+
+  const options = {};
+  options.listeners = {
+    stdout: (data) => {
+      output += data.toString();
+    },
+    stderr: (data) => {
+      output += data.toString();
+    },
+  };
+
+  const exitCode = await exec.exec(command, options);
+
+  return { exitCode, output };
 }
 
 run().catch((error) => {
