@@ -10010,13 +10010,6 @@ async function getGitDiff() {
   const { base, head } = github.context.payload.pull_request;
 
   console.log(
-    'gitdiff normal',
-    await exec.exec(
-      `git diff --name-only --diff-filter=ACMRT ${base.sha} ${head.sha} | xargs`,
-    ),
-  );
-
-  console.log(
     'gitdiff without xargs',
     await exec.exec(
       `git diff --name-only --diff-filter=ACMRT ${base.sha} ${head.sha}`,
