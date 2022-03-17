@@ -55,7 +55,7 @@ async function run() {
 
     const commentBody = replaceTokens(commentTemplate, tokenMap);
     const octokit = await github.getOctokit(gitHubToken);
-    await octokit.issues.createComment({
+    await octokit.rest.issues.createComment({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       issue_number: github.context.payload.pull_request.number,
