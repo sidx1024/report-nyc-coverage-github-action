@@ -32,6 +32,37 @@ function replaceTokens(input, tokenMap) {
   return output;
 }
 
+function createHTMLTableFromArray(data) {
+  // Destructure the headings (first row) from
+  // all the rows
+  const [headings, ...rows] = data;
+
+  // Return some HTML that uses `getCells` to create
+  // some headings, but also to create the rows
+  // in the tbody.
+  return `<table><thead>${getCells(headings, 'th')}</thead><tbody>${createBody(
+    rows,
+  )}</tbody></table>`;
+}
+
+function getCells(data, type) {
+  return data.map((cell) => `<${type}>${cell}</${type}>`).join('');
+}
+
+function createBody(data) {
+  return data.map((row) => `<tr>${getCells(row, 'td')}</tr>`).join('');
+}
+
+function trimBasePath(absolutePath, basePath) {
+  if (basePath && absolutePath.startsWith(basePath)) {
+    return absolutePath.slice(basePath.length);
+  }
+
+  return absolutePath;
+}
+
 module.exports = {
   replaceTokens,
+  createHTMLTableFromArray,
+  trimBasePath,
 };

@@ -4,12 +4,13 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "tap",
+    "test": "tap test/*.test.js",
     "posttest": "tap --coverage-report=json-summary",
     "build": "ncc build src/index.js --license licenses.txt"
   },
   "tap": {
-    "check-coverage": false
+    "check-coverage": false,
+    "nyc-arg": ["--include=src/**", "--all"]
   },
   "engines": {
     "node": ">=16.9.0"

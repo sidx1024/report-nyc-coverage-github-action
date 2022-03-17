@@ -1,3 +1,5 @@
+const { createHTMLTableFromArray } = require('./utils');
+
 function formatChangedFilesCoverageDataToHTMLTable(changedFilesCoverageData, options = {}) {
   const { statements = false, branches = false, functions = false, lines = true } = options;
 
@@ -19,33 +21,9 @@ function formatChangedFilesCoverageDataToHTMLTable(changedFilesCoverageData, opt
     ].filter(Boolean);
   });
 
-  return createTable([headers, ...rows]);
-}
-
-function getCells(data, type) {
-  return data.map((cell) => `<${type}>${cell}</${type}>`).join('');
-}
-
-function createBody(data) {
-  return data.map((row) => `<tr>${getCells(row, 'td')}</tr>`).join('');
-}
-
-function createTable(data) {
-  // Destructure the headings (first row) from
-  // all the rows
-  const [headings, ...rows] = data;
-
-  // Return some HTML that uses `getCells` to create
-  // some headings, but also to create the rows
-  // in the tbody.
-  return `
-    <table>
-      <thead>${getCells(headings, 'th')}</thead>
-      <tbody>${createBody(rows)}</tbody>
-    </table>
-  `;
+  return createHTMLTableFromArray([headers, ...rows]);
 }
 
 module.exports = {
- formatChangedFilesCoverageDataToHTMLTable,
+  formatChangedFilesCoverageDataToHTMLTable,
 };

@@ -19,7 +19,7 @@ jobs:
         id: hello
         uses: ./
         with:
-          coverage-output-directory: 'coverage'
+          coverage_output_directory: 'coverage'
       # Use the output from the `hello` step
       - name: Get the output time
         run: |

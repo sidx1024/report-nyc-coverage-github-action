@@ -1,14 +1,18 @@
 const { Token, InternalToken } = require('./constants');
+const { trimBasePath } = require('./utils');
 
-function parseCoverageSummaryJSON(json, changed_files) {
+function parseCoverageSummaryJSON(json, { changedFiles, basePath } = {}) {
   const total = json.total;
   delete json.total;
 
-  let changedFilesCoverageData = Object.entries(json);
+  const coverageData = Object.entries(json).map(([absolutePath, data]) => {
+    return [trimBasePath(absolutePath, basePath), data];
+  });
 
-  if (changed_files) {
-    changedFilesCoverageData = changedFilesCoverageData.filter(([file]) => {
-      return Object.hasOwn(changed_files, file);
+  let changedFilesCoverageData;
+  if (changedFiles) {
+    changedFilesCoverageData = coverageData.filter(([file]) => {
+      return Object.hasOwn(changedFiles, file);
     });
   }
 
@@ -17,6 +21,7 @@ function parseCoverageSummaryJSON(json, changed_files) {
     [Token.total_statements_coverage_percent]: total.statements.pct,
     [Token.total_functions_coverage_percent]: total.functions.pct,
     [Token.total_branches_coverage_percent]: total.branches.pct,
+    [InternalToken.files_coverage_data]: coverageData,
     [InternalToken.changed_files_coverage_data]: changedFilesCoverageData,
   };
 }

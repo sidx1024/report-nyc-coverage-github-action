@@ -14,7 +14,7 @@ __nccwpck_require__.r(__webpack_exports__);
 /* harmony export */   "DEFAULT_COMMENT_TEMPLATE_MD_FILENAME": () => (/* binding */ DEFAULT_COMMENT_TEMPLATE_MD_FILENAME)
 /* harmony export */ });
 const ActionInput = {
-  coverage_output_directory: 'coverage-output-directory',
+  coverage_output_directory: 'coverage_output_directory',
 };
 
 const Token = {
@@ -8706,7 +8706,7 @@ async function run() {
     ),
   };
 
-  const gitHubToken = core.getInput('github-token').trim();
+  const gitHubToken = core.getInput('github_token').trim();
   if (gitHubToken !== '' && github.context.eventName === 'pull_request') {
     const commentTemplateMDPath = path.resolve(DEFAULT_COMMENT_TEMPLATE_MD_FILENAME);
     const commentTemplate = fs.readFileSync(commentTemplateMDPath, { encoding: 'utf-8' });
