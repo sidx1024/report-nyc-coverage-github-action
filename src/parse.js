@@ -12,7 +12,6 @@ function parseCoverageSummaryJSON(json, { changedFiles, basePath } = {}) {
   let changedFilesCoverageData = [];
   if (Array.isArray(changedFiles)) {
     changedFilesCoverageData = coverageData.filter(([file]) => {
-      console.log('filer', file, changedFiles);
       return changedFiles.includes(file);
     });
   }

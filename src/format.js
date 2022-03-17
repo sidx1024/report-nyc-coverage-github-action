@@ -1,6 +1,6 @@
 const { createHTMLTableFromArray } = require('./utils');
 
-function formatChangedFilesCoverageDataToHTMLTable(changedFilesCoverageData, options = {}) {
+function formatFilesCoverageDataToHTMLTable(changedFilesCoverageData, options = {}) {
   const { statements = false, branches = false, functions = false, lines = true } = options;
 
   const headers = [
@@ -25,5 +25,5 @@ function formatChangedFilesCoverageDataToHTMLTable(changedFilesCoverageData, opt
 }
 
 module.exports = {
-  formatChangedFilesCoverageDataToHTMLTable,
+  formatFilesCoverageDataToHTMLTable,
 };

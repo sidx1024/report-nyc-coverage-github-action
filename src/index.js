@@ -17,7 +17,7 @@ const {
 } = require('./constants');
 const { replaceTokens } = require('./utils');
 const { parseCoverageSummaryJSON } = require('./parse');
-const { formatChangedFilesCoverageDataToHTMLTable } = require('./format');
+const { formatFilesCoverageDataToHTMLTable } = require('./format');
 
 async function run() {
   const coverageOutputDirectory = core.getInput(ActionInput.coverage_output_directory);
@@ -46,10 +46,10 @@ async function run() {
     [Token.total_statements_coverage_percent]: summary[Token.total_statements_coverage_percent],
     [Token.total_functions_coverage_percent]: summary[Token.total_functions_coverage_percent],
     [Token.total_branches_coverage_percent]: summary[Token.total_branches_coverage_percent],
-    [Token.files_coverage_table]: formatChangedFilesCoverageDataToHTMLTable(
+    [Token.files_coverage_table]: formatFilesCoverageDataToHTMLTable(
       summary[InternalToken.files_coverage_data],
     ),
-    [Token.changed_files_coverage_table]: formatChangedFilesCoverageDataToHTMLTable(
+    [Token.changed_files_coverage_table]: formatFilesCoverageDataToHTMLTable(
       summary[InternalToken.changed_files_coverage_data],
     ),
   };
