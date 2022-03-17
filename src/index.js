@@ -93,7 +93,7 @@ async function executeCommand(command) {
     },
   };
 
-  const exitCode = await exec.exec(command, options);
+  const exitCode = await exec.exec(command, [], options);
 
   return { exitCode, output };
 }
