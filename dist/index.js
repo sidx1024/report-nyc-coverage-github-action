@@ -1,6 +1,83 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 1629:
+/***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+__nccwpck_require__.r(__webpack_exports__);
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   "ActionInput": () => (/* binding */ ActionInput),
+/* harmony export */   "Token": () => (/* binding */ Token),
+/* harmony export */   "InternalToken": () => (/* binding */ InternalToken),
+/* harmony export */   "DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME": () => (/* binding */ DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME),
+/* harmony export */   "DEFAULT_COMMENT_TEMPLATE_MD_FILENAME": () => (/* binding */ DEFAULT_COMMENT_TEMPLATE_MD_FILENAME)
+/* harmony export */ });
+const ActionInput = {
+  coverage_output_directory: 'coverage-output-directory',
+};
+
+const Token = {
+  total_lines_coverage_percent: 'total_lines_coverage_percent',
+  total_statements_coverage_percent: 'total_statements_coverage_percent',
+  total_functions_coverage_percent: 'total_functions_coverage_percent',
+  total_branches_coverage_percent: 'total_branches_coverage_percent',
+  changed_files_coverage_table: 'changed_files_coverage_table',
+  comment_body: 'comment_body',
+};
+
+const InternalToken = {
+  changed_files_coverage_data: 'changed_files_coverage_data',
+};
+
+const DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME = 'coverage-summary.json';
+const DEFAULT_COMMENT_TEMPLATE_MD_FILENAME = 'comment-template.md';
+
+
+/***/ }),
+
+/***/ 58:
+/***/ ((module) => {
+
+function formatChangedFilesCoverageDataToMarkdownTable(changedFilesCoverageData, options = {}) {
+  const { statements = false, branches = false, functions = false, lines = true } = options;
+
+  const headers = [
+    'File',
+    statements && 'Statements',
+    branches && 'Branches',
+    functions && 'Functions',
+    lines && 'Lines',
+  ].filter(Boolean);
+
+  const headersString = `|${headers.join('|')}|`;
+  const headersBreakString = `|${headers.map((_) => '----').join('|')}|`;
+
+  const body = changedFilesCoverageData.map(([file, data]) => {
+    const row = [
+      file,
+      statements && data.statements.pct,
+      branches && data.branches.pct,
+      functions && data.functions.pct,
+      lines && data.lines.pct,
+    ].filter(Boolean);
+
+    const rowString = `|${row.join('|')}|`;
+    return rowString;
+  });
+
+  const bodyString = body.join('\n');
+
+  return [headersString, headersBreakString, bodyString].join('\n');
+}
+
+module.exports = {
+  formatChangedFilesCoverageDataToMarkdownTable,
+};
+
+
+/***/ }),
+
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -8299,6 +8376,39 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 7382:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const { Token, InternalToken } = __nccwpck_require__(1629);
+
+function parseCoverageSummaryJSON(json, changed_files) {
+  const total = json.total;
+  delete json.total;
+
+  let changedFilesCoverageData = Object.entries(json);
+
+  if (changed_files) {
+    changedFilesCoverageData = changedFilesCoverageData.filter(([file]) => {
+      return Object.hasOwn(changed_files, file);
+    });
+  }
+
+  return {
+    [Token.total_lines_coverage_percent]: total.lines.pct,
+    [Token.total_statements_coverage_percent]: total.statements.pct,
+    [Token.total_functions_coverage_percent]: total.functions.pct,
+    [Token.total_branches_coverage_percent]: total.branches.pct,
+    [InternalToken.changed_files_coverage_data]: changedFilesCoverageData,
+  };
+}
+
+module.exports = {
+  parseCoverageSummaryJSON,
+};
+
+
+/***/ }),
+
 /***/ 1252:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
@@ -8543,23 +8653,71 @@ var __webpack_exports__ = {};
 (() => {
 const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
+const path = __nccwpck_require__(1017);
+const fs = __nccwpck_require__(7147);
+// const os = require('os');
 
 const { replaceTokens } = __nccwpck_require__(1252);
+const { parseCoverageSummaryJSON } = __nccwpck_require__(7382);
+const {
+  Token,
+  InternalToken,
+  DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
+  ActionInput,
+  DEFAULT_COMMENT_TEMPLATE_MD_FILENAME,
+} = __nccwpck_require__(1629);
+const { formatChangedFilesCoverageDataToMarkdownTable } = __nccwpck_require__(58);
 
-try {
-  // `who-to-greet` input defined in action metadata file
+async function run() {
+  // const tmpPath = path.resolve(os.tmpdir(), github.context.action);
+  const coverageOutputDirectory = core.getInput(ActionInput.coverage_output_directory);
+
+  const coverageSummaryJSONPath = path.resolve(
+    coverageOutputDirectory,
+    DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
+  );
+  const coverageSummaryJSON = JSON.parse(fs.readFileSync(coverageSummaryJSONPath, 'utf8'));
+
+  const summary = parseCoverageSummaryJSON(coverageSummaryJSON);
+
+  console.log('Done creating summary');
+
   const tokenMap = {
-    'who-to-greet': core.getInput('who-to-greet'),
-    'time': (new Date()).toTimeString(),
-  }
-  console.log(replaceTokens(`Hello {{who-to-greet}}, the time is {{time}}`, tokenMap));
+    [Token.total_lines_coverage_percent]: summary[Token.total_lines_coverage_percent],
+    [Token.total_statements_coverage_percent]: summary[Token.total_statements_coverage_percent],
+    [Token.total_functions_coverage_percent]: summary[Token.total_functions_coverage_percent],
+    [Token.total_branches_coverage_percent]: summary[Token.total_branches_coverage_percent],
+    [Token.changed_files_coverage_table]: formatChangedFilesCoverageDataToMarkdownTable(
+      summary[InternalToken.changed_files_coverage_data],
+    ),
+  };
 
-  // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`The event payload: ${payload}`);
-} catch (error) {
-  core.setFailed(error.message);
+  console.log('Done creating tokenMap', tokenMap);
+
+  if (gitHubToken !== '' && github.context.eventName === 'pull_request') {
+    const commentTemplateMDPath = path.resolve(DEFAULT_COMMENT_TEMPLATE_MD_FILENAME);
+    const commentTemplate = fs.readFileSync(commentTemplateMDPath, 'utf8');
+
+    const commentBody = replaceTokens(commentTemplate, tokenMap);
+
+    const gitHubToken = core.getInput('github-token').trim();
+    const octokit = await github.getOctokit(gitHubToken);
+    await octokit.issues.createComment({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      issue_number: github.context.payload.pull_request.number,
+      body: commentBody,
+    });
+  }
+
+  Object.entries(tokenMap).forEach(([token, value]) => {
+    core.setOutput(token, value);
+  });
 }
+
+run().catch((error) => {
+  core.setFailed(error.message);
+});
 
 })();
 
