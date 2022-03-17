@@ -18,7 +18,7 @@ function formatChangedFilesCoverageDataToHTMLTable(changedFilesCoverageData, opt
       branches && data.branches.pct,
       functions && data.functions.pct,
       lines && data.lines.pct,
-    ].filter(Boolean);
+    ].filter(v => v || v === 0);
   });
 
   return createHTMLTableFromArray([headers, ...rows]);
