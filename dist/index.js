@@ -8695,8 +8695,8 @@ async function run() {
 
   console.log('Done creating tokenMap', tokenMap);
 
-  console.log('github.context.eventName', github.context.eventName);
-  console.log('github.context.payload.pull_request.number', github?.context?.payload?.pull_request?.number);
+  console.log('github.context', github.context);
+  console.log('github.event', github.event);
 
   const gitHubToken = core.getInput('github-token').trim();
 
