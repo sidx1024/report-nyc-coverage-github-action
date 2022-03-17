@@ -40,8 +40,14 @@ async function run() {
     ),
   };
 
-  const gitHubToken = core.getInput('github-token').trim();
   console.log('Done creating tokenMap', tokenMap);
+
+  console.log('github.context.eventName', github.context.eventName);
+  console.log('github.event.number', github.event.number);
+
+  const gitHubToken = core.getInput('github-token').trim();
+
+  console.log('github token length', gitHubToken.length);
 
   if (gitHubToken !== '' && github.context.eventName === 'pull_request') {
     const commentTemplateMDPath = path.resolve(DEFAULT_COMMENT_TEMPLATE_MD_FILENAME);
