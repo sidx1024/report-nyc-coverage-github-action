@@ -7,10 +7,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Hello world action step
         id: hello
-        uses: sidx1024/coverage-reporter-action@main
+        uses: ./
         with:
           coverage-output-directory: 'sample-coverage-output'
       # Use the output from the `hello` step
