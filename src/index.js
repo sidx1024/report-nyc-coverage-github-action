@@ -25,11 +25,20 @@ async function run() {
     coverageOutputDirectory,
     DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
   );
+
+  const gitHubToken = core.getInput('github_token').trim();
+
+  let changedFiles;
+  if (gitHubToken && github.context.eventName === 'pull_request') {
+    changedFiles = await getChangedFiles();
+  }
+
   const coverageSummaryJSON = JSON.parse(
     fs.readFileSync(coverageSummaryJSONPath, { encoding: 'utf-8' }),
   );
   const summary = parseCoverageSummaryJSON(coverageSummaryJSON, {
     basePath: core.getInput(ActionInput.sources_base_path),
+    changedFiles,
   });
 
   let tokenMap = {
@@ -45,8 +54,7 @@ async function run() {
     ),
   };
 
-  const gitHubToken = core.getInput('github_token').trim();
-  if (gitHubToken !== '' && github.context.eventName === 'pull_request') {
+  if (gitHubToken && github.context.eventName === 'pull_request') {
     const commentTemplateMDPath = path.resolve(DEFAULT_COMMENT_TEMPLATE_MD_FILENAME);
     const commentTemplate = fs.readFileSync(commentTemplateMDPath, { encoding: 'utf-8' });
     const commentBody = replaceTokens(commentTemplate, tokenMap);
@@ -57,7 +65,6 @@ async function run() {
       issue_number: github.context.payload.pull_request.number,
       body: commentBody,
     });
-    getGitDiff();
   }
 
   Object.entries(tokenMap).forEach(([token, value]) => {
@@ -65,14 +72,14 @@ async function run() {
   });
 }
 
-async function getGitDiff() {
+async function getChangedFiles() {
   const { base, head } = github.context.payload.pull_request;
   const { exitCode, output } = await executeCommand(
     `git diff --name-only --diff-filter=ACMRT ${base.sha} ${head.sha}`,
   );
   if (exitCode === 0) {
-    const filesChanged = output.split(/\r?\n/);
-    console.log('filesChanged', filesChanged);
+    const filesChanged = output.split(/\r?\n/).filter(line => line.length > 0);
+    return filesChanged;
   } else {
     console.error('An error occurred while executing command.', {
       exitCode,

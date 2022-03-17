@@ -10,9 +10,9 @@ function parseCoverageSummaryJSON(json, { changedFiles, basePath } = {}) {
   });
 
   let changedFilesCoverageData = [];
-  if (changedFiles) {
+  if (Array.isArray(changedFiles)) {
     changedFilesCoverageData = coverageData.filter(([file]) => {
-      return Object.hasOwn(changedFiles, file);
+      return changedFiles.includes(file);
     });
   }
 
