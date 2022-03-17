@@ -8670,6 +8670,7 @@ const { formatChangedFilesCoverageDataToMarkdownTable } = __nccwpck_require__(58
 
 async function run() {
   // const tmpPath = path.resolve(os.tmpdir(), github.context.action);
+
   const coverageOutputDirectory = core.getInput(ActionInput.coverage_output_directory);
 
   const coverageSummaryJSONPath = path.resolve(
