@@ -45,7 +45,6 @@ async function run() {
     ),
   };
 
-  getGitDiff();
 
   const gitHubToken = core.getInput('github_token').trim();
   if (gitHubToken !== '' && github.context.eventName === 'pull_request') {
@@ -59,6 +58,7 @@ async function run() {
       issue_number: github.context.payload.pull_request.number,
       body: commentBody,
     });
+    getGitDiff();
   }
 
   Object.entries(tokenMap).forEach(([token, value]) => {
@@ -67,6 +67,8 @@ async function run() {
 }
 
 async function getGitDiff() {
+  console.log('github.context.payload.pull_request', github.context.payload.pull_request);
+
   console.log(
     'gitdiff normal',
     await exec.exec(
