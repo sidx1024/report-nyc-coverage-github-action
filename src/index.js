@@ -5,6 +5,7 @@ const fs = require('fs');
 // GitHub Actions
 const core = require('@actions/core');
 const github = require('@actions/github');
+const exec = require('@actions/exec');
 
 // Module
 const {
@@ -44,6 +45,8 @@ async function run() {
     ),
   };
 
+  getGitDiff();
+
   const gitHubToken = core.getInput('github_token').trim();
   if (gitHubToken !== '' && github.context.eventName === 'pull_request') {
     const commentTemplateMDPath = path.resolve(DEFAULT_COMMENT_TEMPLATE_MD_FILENAME);
@@ -61,6 +64,22 @@ async function run() {
   Object.entries(tokenMap).forEach(([token, value]) => {
     core.setOutput(token, value);
   });
+}
+
+async function getGitDiff() {
+  console.log(
+    'gitdiff normal',
+    await exec.exec(
+      `git diff --name-only --diff-filter=ACMRT ${github.event.pull_request.base.sha} ${github.sha} | xargs`,
+    ),
+  );
+
+  console.log(
+    'gitdiff without xargs',
+    await exec.exec(
+      `git diff --name-only --diff-filter=ACMRT ${github.event.pull_request.base.sha} ${github.sha}`,
+    ),
+  );
 }
 
 run().catch((error) => {
