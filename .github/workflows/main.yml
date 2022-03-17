@@ -1,15 +1,26 @@
-on: [push]
+on: [pull_request]
 
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
     name: A job to say hello
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Run tests and generate coverage
+        run: |
+          npm i
+          npm run test
+
       - name: Hello world action step
         id: hello
-        uses: sidx1024/coverage-reporter-action@main
+        uses: ./
         with:
-          coverage-output-directory: 'sample-coverage-output'
+          coverage_output_directory: 'coverage'
       # Use the output from the `hello` step
       - name: Get the output time
         run: |
