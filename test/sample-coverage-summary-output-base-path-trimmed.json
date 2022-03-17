@@ -49,5 +49,6 @@
         "branches": { "total": 10, "covered": 8, "skipped": 0, "pct": 80 }
       }
     ]
-  ]
+  ],
+  "changed_files_coverage_data":[]
 }
