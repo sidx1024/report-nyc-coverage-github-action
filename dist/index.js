@@ -39,7 +39,7 @@ const DEFAULT_COMMENT_TEMPLATE_MD_FILENAME = 'comment-template.md';
 /***/ 58:
 /***/ ((module) => {
 
-function formatChangedFilesCoverageDataToMarkdownTable(changedFilesCoverageData, options = {}) {
+function formatChangedFilesCoverageDataToHTMLTable(changedFilesCoverageData, options = {}) {
   const { statements = false, branches = false, functions = false, lines = true } = options;
 
   const headers = [
@@ -50,29 +50,45 @@ function formatChangedFilesCoverageDataToMarkdownTable(changedFilesCoverageData,
     lines && 'Lines',
   ].filter(Boolean);
 
-  const headersString = `|${headers.join('|')}|`;
-  const headersBreakString = `|${headers.map((_) => '----').join('|')}|`;
-
-  const body = changedFilesCoverageData.map(([file, data]) => {
-    const row = [
+  const rows = changedFilesCoverageData.map(([file, data]) => {
+    return [
       file,
       statements && data.statements.pct,
       branches && data.branches.pct,
       functions && data.functions.pct,
       lines && data.lines.pct,
     ].filter(Boolean);
-
-    const rowString = `|${row.join('|')}|`;
-    return rowString;
   });
 
-  const bodyString = body.join('\n');
+  return createTable([headers, ...rows]);
+}
 
-  return [headersString, headersBreakString, bodyString].join('\n');
+function getCells(data, type) {
+  return data.map((cell) => `<${type}>${cell}</${type}>`).join('');
+}
+
+function createBody(data) {
+  return data.map((row) => `<tr>${getCells(row, 'td')}</tr>`).join('');
+}
+
+function createTable(data) {
+  // Destructure the headings (first row) from
+  // all the rows
+  const [headings, ...rows] = data;
+
+  // Return some HTML that uses `getCells` to create
+  // some headings, but also to create the rows
+  // in the tbody.
+  return `
+    <table>
+      <thead>${getCells(headings, 'th')}</thead>
+      <tbody>${createBody(rows)}</tbody>
+    </table>
+  `;
 }
 
 module.exports = {
-  formatChangedFilesCoverageDataToMarkdownTable,
+ formatChangedFilesCoverageDataToHTMLTable,
 };
 
 
@@ -8586,7 +8602,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
-/******/
+/******/ 	
 /******/ 	// The require function
 /******/ 	function __nccwpck_require__(moduleId) {
 /******/ 		// Check if module is in cache
@@ -8600,7 +8616,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
-/******/
+/******/ 	
 /******/ 		// Execute the module function
 /******/ 		var threw = true;
 /******/ 		try {
@@ -8609,11 +8625,11 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 		} finally {
 /******/ 			if(threw) delete __webpack_module_cache__[moduleId];
 /******/ 		}
-/******/
+/******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/
+/******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
@@ -8626,12 +8642,12 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 			}
 /******/ 		};
 /******/ 	})();
-/******/
+/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
-/******/
+/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -8642,70 +8658,58 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
 /******/ 	})();
-/******/
+/******/ 	
 /******/ 	/* webpack/runtime/compat */
-/******/
+/******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
-/******/
+/******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-const core = __nccwpck_require__(2186);
-const github = __nccwpck_require__(5438);
+// Native
 const path = __nccwpck_require__(1017);
 const fs = __nccwpck_require__(7147);
-// const os = require('os');
 
-const { replaceTokens } = __nccwpck_require__(1252);
-const { parseCoverageSummaryJSON } = __nccwpck_require__(7382);
+// GitHub Actions
+const core = __nccwpck_require__(2186);
+const github = __nccwpck_require__(5438);
+
+// Module
 const {
   Token,
   InternalToken,
-  DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
   ActionInput,
+  DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
   DEFAULT_COMMENT_TEMPLATE_MD_FILENAME,
 } = __nccwpck_require__(1629);
-const { formatChangedFilesCoverageDataToMarkdownTable } = __nccwpck_require__(58);
+const { replaceTokens } = __nccwpck_require__(1252);
+const { parseCoverageSummaryJSON } = __nccwpck_require__(7382);
+const { formatChangedFilesCoverageDataToHTMLTable } = __nccwpck_require__(58);
 
 async function run() {
-  // const tmpPath = path.resolve(os.tmpdir(), github.context.action);
-
   const coverageOutputDirectory = core.getInput(ActionInput.coverage_output_directory);
-
   const coverageSummaryJSONPath = path.resolve(
     coverageOutputDirectory,
     DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
   );
-  const coverageSummaryJSON = JSON.parse(fs.readFileSync(coverageSummaryJSONPath, 'utf8'));
-
+  const coverageSummaryJSON = JSON.parse(fs.readFileSync(coverageSummaryJSONPath, { encoding: 'utf-8' }));
   const summary = parseCoverageSummaryJSON(coverageSummaryJSON);
 
-  console.log('Done creating summary');
-
-  const tokenMap = {
+  let tokenMap = {
     [Token.total_lines_coverage_percent]: summary[Token.total_lines_coverage_percent],
     [Token.total_statements_coverage_percent]: summary[Token.total_statements_coverage_percent],
     [Token.total_functions_coverage_percent]: summary[Token.total_functions_coverage_percent],
     [Token.total_branches_coverage_percent]: summary[Token.total_branches_coverage_percent],
-    [Token.changed_files_coverage_table]: formatChangedFilesCoverageDataToMarkdownTable(
+    [Token.changed_files_coverage_table]: formatChangedFilesCoverageDataToHTMLTable(
       summary[InternalToken.changed_files_coverage_data],
     ),
   };
 
-  console.log('Done creating tokenMap', tokenMap);
-
-  console.log('github.context', github.context);
-  console.log('github.event', github.event);
-
   const gitHubToken = core.getInput('github-token').trim();
-
-  console.log('github token length', gitHubToken.length);
-
   if (gitHubToken !== '' && github.context.eventName === 'pull_request') {
     const commentTemplateMDPath = path.resolve(DEFAULT_COMMENT_TEMPLATE_MD_FILENAME);
-    const commentTemplate = fs.readFileSync(commentTemplateMDPath, 'utf8');
-
+    const commentTemplate = fs.readFileSync(commentTemplateMDPath, { encoding: 'utf-8' });
     const commentBody = replaceTokens(commentTemplate, tokenMap);
     const octokit = await github.getOctokit(gitHubToken);
     await octokit.rest.issues.createComment({

@@ -10,11 +10,16 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
+      - name: Run tests and generate coverage
+        run: |
+          npm i
+          npm run test
+
       - name: Hello world action step
         id: hello
         uses: ./
         with:
-          coverage-output-directory: 'sample-coverage-output'
+          coverage-output-directory: 'coverage'
       # Use the output from the `hello` step
       - name: Get the output time
         run: |

@@ -4,7 +4,7 @@
  * @param {object} tokenMap Object containing the key-value pair for the token, and it's value
  * @returns {string}
  */
-export function replaceTokens(input, tokenMap) {
+function replaceTokens(input, tokenMap) {
   if (typeof input !== 'string') {
     throw new Error('Invalid argument input.');
   }
@@ -31,3 +31,7 @@ export function replaceTokens(input, tokenMap) {
 
   return output;
 }
+
+module.exports = {
+  replaceTokens,
+};

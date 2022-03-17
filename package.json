@@ -4,8 +4,12 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "ncc build index.js --license licenses.txt"
+    "test": "tap",
+    "posttest": "tap --coverage-report=json-summary",
+    "build": "ncc build src/index.js --license licenses.txt"
+  },
+  "tap": {
+    "check-coverage": false
   },
   "engines": {
     "node": ">=16.9.0"
@@ -30,8 +34,8 @@
     "@vercel/ncc": "^0.33.3",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
-    "parse-lcov": "^1.0.4",
-    "prettier": "^2.6.0"
+    "prettier": "^2.6.0",
+    "tap": "^16.0.0"
   },
   "lint-staged": {
     "*.{js,md,json,yml}": "prettier --write"

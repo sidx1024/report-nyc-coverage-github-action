@@ -108,3 +108,7 @@ typings/
 
 # file generated for local testing
 sample-output.json
+
+# coverage files
+coverage
+.nyc_output
