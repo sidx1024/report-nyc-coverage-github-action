@@ -8693,6 +8693,7 @@ async function run() {
     ),
   };
 
+  const gitHubToken = core.getInput('github-token').trim();
   console.log('Done creating tokenMap', tokenMap);
 
   if (gitHubToken !== '' && github.context.eventName === 'pull_request') {
@@ -8700,8 +8701,6 @@ async function run() {
     const commentTemplate = fs.readFileSync(commentTemplateMDPath, 'utf8');
 
     const commentBody = replaceTokens(commentTemplate, tokenMap);
-
-    const gitHubToken = core.getInput('github-token').trim();
     const octokit = await github.getOctokit(gitHubToken);
     await octokit.issues.createComment({
       owner: github.context.repo.owner,
