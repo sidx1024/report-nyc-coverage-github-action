@@ -9644,7 +9644,7 @@ function parseCoverageSummaryJSON(json, { changedFiles, basePath } = {}) {
     return [trimBasePath(absolutePath, basePath), data];
   });
 
-  let changedFilesCoverageData;
+  let changedFilesCoverageData = [];
   if (changedFiles) {
     changedFilesCoverageData = coverageData.filter(([file]) => {
       return Object.hasOwn(changedFiles, file);
