@@ -71,7 +71,8 @@ async function getGitDiff() {
     `git diff --name-only --diff-filter=ACMRT ${base.sha} ${head.sha}`,
   );
   if (exitCode === 0) {
-    console.log(output);
+    const filesChanged = output.split(/\r?\n/);
+    console.log('filesChanged', filesChanged);
   } else {
     console.error('An error occurred while executing command.', {
       exitCode,
