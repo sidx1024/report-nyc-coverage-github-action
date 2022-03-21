@@ -6,7 +6,8 @@
   "scripts": {
     "test": "tap test/*.test.js",
     "posttest": "tap --coverage-report=json-summary",
-    "build": "ncc build src/index.js --license licenses.txt"
+    "build": "ncc build src/index.js --license licenses.txt",
+    "ghadocs": "github-action-readme-generator --readme README.md && git add README.md"
   },
   "tap": {
     "check-coverage": false,
@@ -37,6 +38,7 @@
   },
   "devDependencies": {
     "@vercel/ncc": "^0.33.3",
+    "github-action-readme-generator": "^1.0.12",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
     "prettier": "^2.6.0",
