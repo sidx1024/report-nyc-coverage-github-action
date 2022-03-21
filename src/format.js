@@ -14,8 +14,8 @@ const LETTER_PERCENT = {
   L: (data) => addPercentSignOrReturnEmptyString(data.lines.pct),
 };
 
-function formatFilesCoverageDataToHTMLTable(changedFilesCoverageData, options = {}) {
-  const { order = 'SBFL' } = options;
+function formatFilesCoverageDataToHTMLTable(filesCoverageData, options = {}) {
+  const { order = 'SBFL', filePrefix = '' } = options;
 
   const [o1, o2, o3, o4] = order.split('');
 
@@ -27,9 +27,10 @@ function formatFilesCoverageDataToHTMLTable(changedFilesCoverageData, options = 
     LETTER_LABEL[o4],
   ].filter(Boolean);
 
-  const rows = changedFilesCoverageData.map(([file, data]) => {
+  const rows = filesCoverageData.map(([file, data]) => {
+    const fileCellValue = filePrefix ? createLink(filePrefix + file, file) : file;
     return [
-      file,
+      fileCellValue,
       LETTER_PERCENT[o1]?.(data),
       LETTER_PERCENT[o2]?.(data),
       LETTER_PERCENT[o3]?.(data),
@@ -42,6 +43,10 @@ function formatFilesCoverageDataToHTMLTable(changedFilesCoverageData, options = 
 
 function addPercentSignOrReturnEmptyString(input) {
   return Number.isFinite(input) ? input + '%' : '';
+}
+
+function createLink(link, label) {
+  return `<a href="${link}">${label}</a>`;
 }
 
 module.exports = {

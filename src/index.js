@@ -56,11 +56,17 @@ async function run() {
       summary[ActionOutput.total_branches_coverage_percent],
     [ActionOutput.files_coverage_table]: formatFilesCoverageDataToHTMLTable(
       summary[InternalToken.files_coverage_data],
-      { order: core.getInput(ActionInput.files_coverage_table_output_type_order) },
+      {
+        order: core.getInput(ActionInput.files_coverage_table_output_type_order),
+        filePrefix: getFilePrefix(),
+      },
     ),
     [ActionOutput.changed_files_coverage_table]: formatFilesCoverageDataToHTMLTable(
       summary[InternalToken.changed_files_coverage_data],
-      { order: core.getInput(ActionInput.files_coverage_table_output_type_order) },
+      {
+        order: core.getInput(ActionInput.files_coverage_table_output_type_order),
+        filePrefix: getFilePrefix(),
+      },
     ),
     [ActionOutput.commit_sha]: commitSHA,
     [ActionOutput.short_commit_sha]: commitSHA.substr(0, 7),
@@ -150,6 +156,14 @@ async function findCommentByBody(octokit, commentBodyIncludes) {
   }
 
   return undefined;
+}
+
+function getFilePrefix() {
+  if (github.ref_type === 'branch') {
+    return `../blob/${github.ref_name}/`;
+  }
+
+  return '';
 }
 
 run().catch((error) => {

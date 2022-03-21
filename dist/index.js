@@ -9619,8 +9619,8 @@ const LETTER_PERCENT = {
   L: (data) => addPercentSignOrReturnEmptyString(data.lines.pct),
 };
 
-function formatFilesCoverageDataToHTMLTable(changedFilesCoverageData, options = {}) {
-  const { order = 'SBFL' } = options;
+function formatFilesCoverageDataToHTMLTable(filesCoverageData, options = {}) {
+  const { order = 'SBFL', filePrefix = '' } = options;
 
   const [o1, o2, o3, o4] = order.split('');
 
@@ -9632,9 +9632,10 @@ function formatFilesCoverageDataToHTMLTable(changedFilesCoverageData, options = 
     LETTER_LABEL[o4],
   ].filter(Boolean);
 
-  const rows = changedFilesCoverageData.map(([file, data]) => {
+  const rows = filesCoverageData.map(([file, data]) => {
+    const fileCellValue = filePrefix ? createLink(filePrefix + file, file) : file;
     return [
-      file,
+      fileCellValue,
       LETTER_PERCENT[o1]?.(data),
       LETTER_PERCENT[o2]?.(data),
       LETTER_PERCENT[o3]?.(data),
@@ -9647,6 +9648,10 @@ function formatFilesCoverageDataToHTMLTable(changedFilesCoverageData, options = 
 
 function addPercentSignOrReturnEmptyString(input) {
   return Number.isFinite(input) ? input + '%' : '';
+}
+
+function createLink(link, label) {
+  return `<a href="${link}">${label}</a>`;
 }
 
 module.exports = {
@@ -10020,11 +10025,17 @@ async function run() {
       summary[ActionOutput.total_branches_coverage_percent],
     [ActionOutput.files_coverage_table]: formatFilesCoverageDataToHTMLTable(
       summary[InternalToken.files_coverage_data],
-      { order: core.getInput(ActionInput.files_coverage_table_output_type_order) },
+      {
+        order: core.getInput(ActionInput.files_coverage_table_output_type_order),
+        filePrefix: getFilePrefix(),
+      },
     ),
     [ActionOutput.changed_files_coverage_table]: formatFilesCoverageDataToHTMLTable(
       summary[InternalToken.changed_files_coverage_data],
-      { order: core.getInput(ActionInput.files_coverage_table_output_type_order) },
+      {
+        order: core.getInput(ActionInput.files_coverage_table_output_type_order),
+        filePrefix: getFilePrefix(),
+      },
     ),
     [ActionOutput.commit_sha]: commitSHA,
     [ActionOutput.short_commit_sha]: commitSHA.substr(0, 7),
@@ -10115,6 +10126,16 @@ async function findCommentByBody(octokit, commentBodyIncludes) {
 
   return undefined;
 }
+
+function getFilePrefix() {
+  if (github.ref_type === 'branch') {
+    return `../blob/${github.ref_name}/`;
+  }
+
+  return '';
+}
+
+function getBranchName() {}
 
 run().catch((error) => {
   core.setFailed(error.stack || error.message);
