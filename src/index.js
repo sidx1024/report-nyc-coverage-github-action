@@ -106,6 +106,8 @@ async function run() {
   });
 }
 
+// dummy
+
 async function getChangedFiles() {
   const { base, head } = github.context.payload.pull_request;
   const { exitCode, output } = await executeCommand(
