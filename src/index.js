@@ -75,9 +75,9 @@ async function run() {
 
   const commentTemplateMDPath = path.resolve(core.getInput(ActionInput.comment_template_file));
   const commentTemplate = fs.readFileSync(commentTemplateMDPath, { encoding: 'utf-8' });
-  let commentBody = replaceTokens(commentTemplate, outputs);
-
   const commentMark = `<!-- ${DEFAULT_COMMENT_MARKER} -->`;
+  const commentBody = replaceTokens(commentTemplate, outputs) + '\n' + commentMark + '\n';
+
   const commentMode = core.getInput(ActionInput.comment_mode);
 
   const octokit = await github.getOctokit(gitHubToken);
@@ -85,7 +85,6 @@ async function run() {
     commentMode === 'replace' ? await findCommentByBody(octokit, commentMark) : null;
 
   if (existingComment) {
-    commentBody += '\n' + commentMark + '\n';
     await octokit.rest.issues.updateComment({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
@@ -105,6 +104,8 @@ async function run() {
     core.setOutput(token, value);
   });
 }
+
+// dummy
 
 async function getChangedFiles() {
   const { base, head } = github.context.payload.pull_request;
@@ -159,7 +160,6 @@ async function findCommentByBody(octokit, commentBodyIncludes) {
 }
 
 function getFilePrefix() {
-  console.log('github.context.payload.pull_request', github.context.payload.pull_request);
   return `../blob/${github.context.payload.pull_request.head.sha}/`;
 }
 
