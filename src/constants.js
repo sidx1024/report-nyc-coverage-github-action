@@ -3,7 +3,7 @@ module.exports = {
     coverage_output_directory: 'coverage_output_directory',
     sources_base_path: 'sources_base_path'
   },
-  Token: {
+  ActionOutput: {
     total_lines_coverage_percent: 'total_lines_coverage_percent',
     total_statements_coverage_percent: 'total_statements_coverage_percent',
     total_functions_coverage_percent: 'total_functions_coverage_percent',

@@ -9574,7 +9574,7 @@ module.exports = {
     coverage_output_directory: 'coverage_output_directory',
     sources_base_path: 'sources_base_path'
   },
-  Token: {
+  ActionOutput: {
     total_lines_coverage_percent: 'total_lines_coverage_percent',
     total_statements_coverage_percent: 'total_statements_coverage_percent',
     total_functions_coverage_percent: 'total_functions_coverage_percent',
@@ -9637,7 +9637,7 @@ module.exports = {
 /***/ 3248:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-const { Token, InternalToken } = __nccwpck_require__(4438);
+const { ActionOutput, InternalToken } = __nccwpck_require__(4438);
 const { trimBasePath } = __nccwpck_require__(1608);
 
 function parseCoverageSummaryJSON(json, { changedFiles, basePath } = {}) {
@@ -9656,10 +9656,10 @@ function parseCoverageSummaryJSON(json, { changedFiles, basePath } = {}) {
   }
 
   return {
-    [Token.total_lines_coverage_percent]: total.lines.pct,
-    [Token.total_statements_coverage_percent]: total.statements.pct,
-    [Token.total_functions_coverage_percent]: total.functions.pct,
-    [Token.total_branches_coverage_percent]: total.branches.pct,
+    [ActionOutput.total_lines_coverage_percent]: total.lines.pct,
+    [ActionOutput.total_statements_coverage_percent]: total.statements.pct,
+    [ActionOutput.total_functions_coverage_percent]: total.functions.pct,
+    [ActionOutput.total_branches_coverage_percent]: total.branches.pct,
     [InternalToken.files_coverage_data]: coverageData,
     [InternalToken.changed_files_coverage_data]: changedFilesCoverageData,
   };
@@ -9951,7 +9951,7 @@ const exec = __nccwpck_require__(1514);
 
 // Module
 const {
-  Token,
+  ActionOutput,
   InternalToken,
   ActionInput,
   DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
@@ -9984,14 +9984,14 @@ async function run() {
   });
 
   let tokenMap = {
-    [Token.total_lines_coverage_percent]: summary[Token.total_lines_coverage_percent],
-    [Token.total_statements_coverage_percent]: summary[Token.total_statements_coverage_percent],
-    [Token.total_functions_coverage_percent]: summary[Token.total_functions_coverage_percent],
-    [Token.total_branches_coverage_percent]: summary[Token.total_branches_coverage_percent],
-    [Token.files_coverage_table]: formatFilesCoverageDataToHTMLTable(
+    [ActionOutput.total_lines_coverage_percent]: summary[ActionOutput.total_lines_coverage_percent],
+    [ActionOutput.total_statements_coverage_percent]: summary[ActionOutput.total_statements_coverage_percent],
+    [ActionOutput.total_functions_coverage_percent]: summary[ActionOutput.total_functions_coverage_percent],
+    [ActionOutput.total_branches_coverage_percent]: summary[ActionOutput.total_branches_coverage_percent],
+    [ActionOutput.files_coverage_table]: formatFilesCoverageDataToHTMLTable(
       summary[InternalToken.files_coverage_data],
     ),
-    [Token.changed_files_coverage_table]: formatFilesCoverageDataToHTMLTable(
+    [ActionOutput.changed_files_coverage_table]: formatFilesCoverageDataToHTMLTable(
       summary[InternalToken.changed_files_coverage_data],
     ),
   };

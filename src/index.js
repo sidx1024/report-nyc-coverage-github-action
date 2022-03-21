@@ -9,7 +9,7 @@ const exec = require('@actions/exec');
 
 // Module
 const {
-  Token,
+  ActionOutput,
   InternalToken,
   ActionInput,
   DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
@@ -42,14 +42,14 @@ async function run() {
   });
 
   let tokenMap = {
-    [Token.total_lines_coverage_percent]: summary[Token.total_lines_coverage_percent],
-    [Token.total_statements_coverage_percent]: summary[Token.total_statements_coverage_percent],
-    [Token.total_functions_coverage_percent]: summary[Token.total_functions_coverage_percent],
-    [Token.total_branches_coverage_percent]: summary[Token.total_branches_coverage_percent],
-    [Token.files_coverage_table]: formatFilesCoverageDataToHTMLTable(
+    [ActionOutput.total_lines_coverage_percent]: summary[ActionOutput.total_lines_coverage_percent],
+    [ActionOutput.total_statements_coverage_percent]: summary[ActionOutput.total_statements_coverage_percent],
+    [ActionOutput.total_functions_coverage_percent]: summary[ActionOutput.total_functions_coverage_percent],
+    [ActionOutput.total_branches_coverage_percent]: summary[ActionOutput.total_branches_coverage_percent],
+    [ActionOutput.files_coverage_table]: formatFilesCoverageDataToHTMLTable(
       summary[InternalToken.files_coverage_data],
     ),
-    [Token.changed_files_coverage_table]: formatFilesCoverageDataToHTMLTable(
+    [ActionOutput.changed_files_coverage_table]: formatFilesCoverageDataToHTMLTable(
       summary[InternalToken.changed_files_coverage_data],
     ),
   };
