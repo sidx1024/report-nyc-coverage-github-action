@@ -13,7 +13,6 @@ const {
   InternalToken,
   ActionInput,
   DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
-  DEFAULT_COMMENT_TEMPLATE_MD_FILENAME,
   DEFAULT_COMMENT_MARKER,
 } = require('./constants');
 const { replaceTokens } = require('./utils');
@@ -66,13 +65,33 @@ async function run() {
     [ActionOutput.commit_link]: `${github.context.payload.pull_request.number}/commits/${commitSHA}`,
   };
 
-  const commentTemplateMDPath = path.resolve(DEFAULT_COMMENT_TEMPLATE_MD_FILENAME);
+  const commentTemplateMDPath = path.resolve(core.getInput(ActionInput.comment_template_file));
   const commentTemplate = fs.readFileSync(commentTemplateMDPath, { encoding: 'utf-8' });
+  let commentBody = replaceTokens(commentTemplate, outputs);
+
   const commentMark = `<!-- ${DEFAULT_COMMENT_MARKER} -->`;
-  const commentBody = commentMark + '\n\n' + replaceTokens(commentTemplate, outputs);
+  const commentMode = core.getInput(ActionInput.comment_mode);
 
   const octokit = await github.getOctokit(gitHubToken);
-  await createOrReplaceComment(octokit, commentBody, commentMark);
+  const existingComment =
+    commentMode === 'replace' ? await findCommentByBody(octokit, commentMark) : null;
+
+  if (existingComment) {
+    commentBody += '\n' + commentMark + '\n';
+    await octokit.rest.issues.updateComment({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      comment_id: existingComment.id,
+      body: commentBody,
+    });
+  } else {
+    await octokit.rest.issues.createComment({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      issue_number: github.context.payload.pull_request.number,
+      body: commentBody,
+    });
+  }
 
   Object.entries(outputs).forEach(([token, value]) => {
     core.setOutput(token, value);
@@ -125,33 +144,12 @@ async function findCommentByBody(octokit, commentBodyIncludes) {
     parameters,
   )) {
     const comment = comments.find((comment) => comment.body.includes(commentBodyIncludes));
-    if (comment) return { found: true, comment };
+    if (comment) return comment;
   }
 
-  return { found: false };
-}
-
-async function createOrReplaceComment(octokit, commentBody, commentMark) {
-  const existingComment = await findCommentByBody(octokit, commentMark);
-  if (existingComment.found) {
-    await octokit.rest.issues.updateComment({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      comment_id: existingComment.comment.id,
-      body: commentBody,
-    });
-  } else {
-    await octokit.rest.issues.createComment({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      issue_number: github.context.payload.pull_request.number,
-      body: commentBody,
-    });
-  }
+  return undefined;
 }
 
 run().catch((error) => {
   core.setFailed(error.stack || error.message);
 });
-
-// Dummy commit

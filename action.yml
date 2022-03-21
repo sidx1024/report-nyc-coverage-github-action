@@ -8,6 +8,10 @@ inputs:
     description: 'Template markdown file to be used for GitHub PR comment. Optional.'
     default: 'comment-template.md'
     required: false
+  comment_mode:
+    description: '"replace" or "new"'
+    default: "replace"
+    required: false
   github_token:
     description: 'An alternative GitHub token, other than the default provided by GitHub Actions runner. Optional.'
     default: ${{ github.token }}
