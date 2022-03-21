@@ -20,6 +20,10 @@ inputs:
     description: 'Absolute path to the source files. The path will be trimmed from the coverage data. Optional. Default is the github workspace directory with a trailing slash.'
     default: ${{ format('{0}/', github.workspace) }}
     required: false
+  files_coverage_table_output_type_order:
+    description: 'Specify the order for coverage types to be included in the output table. (S: statements, B: branches, F: functions, L: lines). Missing types will be excluded.'
+    default: 'SBFL'
+    required: false
 outputs:
   total_lines_coverage_percent:
     description: 'Total lines coverage percent (XX.XX%)'

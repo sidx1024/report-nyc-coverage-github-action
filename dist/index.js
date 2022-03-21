@@ -9572,7 +9572,10 @@ function wrappy (fn, cb) {
 module.exports = {
   ActionInput: {
     coverage_output_directory: 'coverage_output_directory',
-    sources_base_path: 'sources_base_path'
+    sources_base_path: 'sources_base_path',
+    comment_template_file: 'comment_template_file',
+    comment_mode: 'comment_mode',
+    files_coverage_table_output_type_order: 'files_coverage_table_output_type_order',
   },
   ActionOutput: {
     total_lines_coverage_percent: 'total_lines_coverage_percent',
@@ -9591,7 +9594,6 @@ module.exports = {
     changed_files_coverage_data: 'changed_files_coverage_data',
   },
   DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME: 'coverage-summary.json',
-  DEFAULT_COMMENT_TEMPLATE_MD_FILENAME: 'comment-template.md',
   DEFAULT_COMMENT_MARKER: 'report-nyc-coverage-github-action-comment-mark',
 };
 
@@ -9603,24 +9605,40 @@ module.exports = {
 
 const { createHTMLTableFromArray } = __nccwpck_require__(1608);
 
+const LETTER_LABEL = {
+  S: 'Statements',
+  B: 'Branches',
+  F: 'Functions',
+  L: 'Lines',
+};
+
+const LETTER_PERCENT = {
+  S: (data) => addPercentSignOrReturnEmptyString(data.statements.pct),
+  B: (data) => addPercentSignOrReturnEmptyString(data.branches.pct),
+  F: (data) => addPercentSignOrReturnEmptyString(data.functions.pct),
+  L: (data) => addPercentSignOrReturnEmptyString(data.lines.pct),
+};
+
 function formatFilesCoverageDataToHTMLTable(changedFilesCoverageData, options = {}) {
-  const { statements = false, branches = false, functions = false, lines = true } = options;
+  const { order = 'SBFL' } = options;
+
+  const [o1, o2, o3, o4] = order.split('');
 
   const headers = [
     'File',
-    statements && 'Statements',
-    branches && 'Branches',
-    functions && 'Functions',
-    lines && 'Lines',
+    LETTER_LABEL[o1],
+    LETTER_LABEL[o2],
+    LETTER_LABEL[o3],
+    LETTER_LABEL[o4],
   ].filter(Boolean);
 
   const rows = changedFilesCoverageData.map(([file, data]) => {
     return [
       file,
-      statements && addPercentSignOrReturnEmptyString(data.statements.pct),
-      branches && addPercentSignOrReturnEmptyString(data.branches.pct),
-      functions && addPercentSignOrReturnEmptyString(data.functions.pct),
-      lines && addPercentSignOrReturnEmptyString(data.lines.pct),
+      LETTER_PERCENT[o1]?.(data),
+      LETTER_PERCENT[o2]?.(data),
+      LETTER_PERCENT[o3]?.(data),
+      LETTER_PERCENT[o4]?.(data),
     ].filter(Boolean);
   });
 
@@ -9959,7 +9977,6 @@ const {
   InternalToken,
   ActionInput,
   DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
-  DEFAULT_COMMENT_TEMPLATE_MD_FILENAME,
   DEFAULT_COMMENT_MARKER,
 } = __nccwpck_require__(4438);
 const { replaceTokens } = __nccwpck_require__(1608);
@@ -10003,22 +10020,44 @@ async function run() {
       summary[ActionOutput.total_branches_coverage_percent],
     [ActionOutput.files_coverage_table]: formatFilesCoverageDataToHTMLTable(
       summary[InternalToken.files_coverage_data],
+      { order: core.getInput(ActionInput.files_coverage_table_output_type_order) },
     ),
     [ActionOutput.changed_files_coverage_table]: formatFilesCoverageDataToHTMLTable(
       summary[InternalToken.changed_files_coverage_data],
+      { order: core.getInput(ActionInput.files_coverage_table_output_type_order) },
     ),
     [ActionOutput.commit_sha]: commitSHA,
     [ActionOutput.short_commit_sha]: commitSHA.substr(0, 7),
     [ActionOutput.commit_link]: `${github.context.payload.pull_request.number}/commits/${commitSHA}`,
   };
 
-  const commentTemplateMDPath = path.resolve(DEFAULT_COMMENT_TEMPLATE_MD_FILENAME);
+  const commentTemplateMDPath = path.resolve(core.getInput(ActionInput.comment_template_file));
   const commentTemplate = fs.readFileSync(commentTemplateMDPath, { encoding: 'utf-8' });
+  let commentBody = replaceTokens(commentTemplate, outputs);
+
   const commentMark = `<!-- ${DEFAULT_COMMENT_MARKER} -->`;
-  const commentBody = commentMark + '\n\n' + replaceTokens(commentTemplate, outputs);
+  const commentMode = core.getInput(ActionInput.comment_mode);
 
   const octokit = await github.getOctokit(gitHubToken);
-  await createOrReplaceComment(octokit, commentBody, commentMark);
+  const existingComment =
+    commentMode === 'replace' ? await findCommentByBody(octokit, commentMark) : null;
+
+  if (existingComment) {
+    commentBody += '\n' + commentMark + '\n';
+    await octokit.rest.issues.updateComment({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      comment_id: existingComment.id,
+      body: commentBody,
+    });
+  } else {
+    await octokit.rest.issues.createComment({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      issue_number: github.context.payload.pull_request.number,
+      body: commentBody,
+    });
+  }
 
   Object.entries(outputs).forEach(([token, value]) => {
     core.setOutput(token, value);
@@ -10071,29 +10110,10 @@ async function findCommentByBody(octokit, commentBodyIncludes) {
     parameters,
   )) {
     const comment = comments.find((comment) => comment.body.includes(commentBodyIncludes));
-    if (comment) return { found: true, comment };
+    if (comment) return comment;
   }
 
-  return { found: false };
-}
-
-async function createOrReplaceComment(octokit, commentBody, commentMark) {
-  const existingComment = await findCommentByBody(octokit, commentMark);
-  if (existingComment.found) {
-    await octokit.rest.issues.updateComment({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      comment_id: existingComment.comment.id,
-      body: commentBody,
-    });
-  } else {
-    await octokit.rest.issues.createComment({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      issue_number: github.context.payload.pull_request.number,
-      body: commentBody,
-    });
-  }
+  return undefined;
 }
 
 run().catch((error) => {

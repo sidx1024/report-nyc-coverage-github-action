@@ -4,6 +4,7 @@ module.exports = {
     sources_base_path: 'sources_base_path',
     comment_template_file: 'comment_template_file',
     comment_mode: 'comment_mode',
+    files_coverage_table_output_type_order: 'files_coverage_table_output_type_order',
   },
   ActionOutput: {
     total_lines_coverage_percent: 'total_lines_coverage_percent',
