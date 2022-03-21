@@ -153,3 +153,5 @@ async function createOrReplaceComment(octokit, commentBody, commentMark) {
 run().catch((error) => {
   core.setFailed(error.stack || error.message);
 });
+
+// Dummy commit
