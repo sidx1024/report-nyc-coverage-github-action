@@ -10044,18 +10044,16 @@ async function run() {
 
   const commentTemplateMDPath = path.resolve(core.getInput(ActionInput.comment_template_file));
   const commentTemplate = fs.readFileSync(commentTemplateMDPath, { encoding: 'utf-8' });
-  let commentBody = replaceTokens(commentTemplate, outputs);
-
   const commentMark = `<!-- ${DEFAULT_COMMENT_MARKER} -->`;
+  const commentBody = replaceTokens(commentTemplate, outputs) + '\n' + commentMark + '\n';
+
   const commentMode = core.getInput(ActionInput.comment_mode);
-  console.log('commentMode', commentMode);
 
   const octokit = await github.getOctokit(gitHubToken);
   const existingComment =
     commentMode === 'replace' ? await findCommentByBody(octokit, commentMark) : null;
 
   if (existingComment) {
-    commentBody += '\n' + commentMark + '\n';
     await octokit.rest.issues.updateComment({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
