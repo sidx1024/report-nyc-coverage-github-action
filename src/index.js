@@ -159,6 +159,7 @@ async function findCommentByBody(octokit, commentBodyIncludes) {
 }
 
 function getFilePrefix() {
+  console.log('github.ref_type', github.ref_type);
   if (github.ref_type === 'branch') {
     return `../blob/${github.ref_name}/`;
   }
