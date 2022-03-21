@@ -11,6 +11,9 @@ module.exports = {
     files_coverage_table: 'files_coverage_table',
     changed_files_coverage_table: 'changed_files_coverage_table',
     comment_body: 'comment_body',
+    commit_sha: 'commit_sha',
+    short_commit_sha: 'short_commit_sha',
+    commit_link: 'commit_link',
   },
   InternalToken: {
     files_coverage_data: 'files_coverage_data',
@@ -18,4 +21,5 @@ module.exports = {
   },
   DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME: 'coverage-summary.json',
   DEFAULT_COMMENT_TEMPLATE_MD_FILENAME: 'comment-template.md',
+  DEFAULT_COMMENT_MARKER: 'report-nyc-coverage-github-action-comment-mark',
 };

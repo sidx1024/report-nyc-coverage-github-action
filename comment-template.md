@@ -1,4 +1,5 @@
 ## Coverage Report
+Commit: [{{short_commit_sha}}]({{commit_link}})
 
 | Type                 | Coverage                          |
 |----------------------|-----------------------------------|

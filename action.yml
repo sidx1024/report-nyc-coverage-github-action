@@ -31,6 +31,12 @@ outputs:
     description: 'HTML table content containing the file path and corresponding coverage percent for files changed in the PR'
   comment_body:
     description: 'The comment body in HTML format'
+  commit_sha:
+    description: 'Last commit SHA (commit due to which this action was executed)'
+  short_commit_sha:
+    description: 'Last commit SHA in shorter format (6ef01b)'
+  commit_link:
+    description: 'Relative link for the last commit'
 runs:
   using: 'node16'
   main: 'dist/index.js'
