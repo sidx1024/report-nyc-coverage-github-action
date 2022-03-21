@@ -3,7 +3,7 @@ on: [pull_request]
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
-    name: A job to say hello
+    name: Test and report
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -11,18 +11,13 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Run tests and generate coverage
+      - name: Run tests
         run: |
           npm i
           npm run test
 
-      - name: Hello world action step
+      - name: Report coverage
         id: hello
         uses: ./
         with:
           coverage_output_directory: 'coverage'
-      # Use the output from the `hello` step
-      - name: Get the output time
-        run: |
-          echo "total_lines_coverage_percent ${{ steps.hello.outputs.total_lines_coverage_percent }}"
-          echo "comment_body ${{ steps.hello.outputs.comment_body }}"

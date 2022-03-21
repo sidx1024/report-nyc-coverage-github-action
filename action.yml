@@ -17,10 +17,20 @@ inputs:
     default: ${{ format('{0}/', github.workspace) }}
     required: false
 outputs:
-  total_lines_coverage_percent: # id of output
-    description: 'total_lines_coverage_percent description'
-  comment_body: # id of output
-    description: 'comment_body description'
+  total_lines_coverage_percent:
+    description: 'Total lines coverage percent (XX.XX%)'
+  total_branches_coverage_percent:
+    description: 'Total branches coverage percent (XX.XX%)'
+  total_statements_coverage_percent:
+    description: 'Total statements coverage percent (XX.XX%)'
+  total_functions_coverage_percent:
+    description: 'Total functions coverage percent (XX.XX%)'
+  files_coverage_table:
+    description: 'HTML table content containing the file path and corresponding coverage percent for all files'
+  changed_files_coverage_table:
+    description: 'HTML table content containing the file path and corresponding coverage percent for files changed in the PR'
+  comment_body:
+    description: 'The comment body in HTML format'
 runs:
   using: 'node16'
   main: 'dist/index.js'

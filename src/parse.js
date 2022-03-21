@@ -1,4 +1,4 @@
-const { Token, InternalToken } = require('./constants');
+const { ActionOutput, InternalToken } = require('./constants');
 const { trimBasePath } = require('./utils');
 
 function parseCoverageSummaryJSON(json, { changedFiles, basePath } = {}) {
@@ -17,10 +17,10 @@ function parseCoverageSummaryJSON(json, { changedFiles, basePath } = {}) {
   }
 
   return {
-    [Token.total_lines_coverage_percent]: total.lines.pct,
-    [Token.total_statements_coverage_percent]: total.statements.pct,
-    [Token.total_functions_coverage_percent]: total.functions.pct,
-    [Token.total_branches_coverage_percent]: total.branches.pct,
+    [ActionOutput.total_lines_coverage_percent]: total.lines.pct,
+    [ActionOutput.total_statements_coverage_percent]: total.statements.pct,
+    [ActionOutput.total_functions_coverage_percent]: total.functions.pct,
+    [ActionOutput.total_branches_coverage_percent]: total.branches.pct,
     [InternalToken.files_coverage_data]: coverageData,
     [InternalToken.changed_files_coverage_data]: changedFilesCoverageData,
   };
