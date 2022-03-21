@@ -8,6 +8,10 @@ inputs:
     description: 'Template markdown file to be used for GitHub PR comment. Optional.'
     default: 'comment-template.md'
     required: false
+  comment_mode:
+    description: '"replace" or "new"'
+    default: "replace"
+    required: false
   github_token:
     description: 'An alternative GitHub token, other than the default provided by GitHub Actions runner. Optional.'
     default: ${{ github.token }}
@@ -15,6 +19,10 @@ inputs:
   sources_base_path:
     description: 'Absolute path to the source files. The path will be trimmed from the coverage data. Optional. Default is the github workspace directory with a trailing slash.'
     default: ${{ format('{0}/', github.workspace) }}
+    required: false
+  files_coverage_table_output_type_order:
+    description: 'Specify the order for coverage types to be included in the output table. (S: statements, B: branches, F: functions, L: lines). Missing types will be excluded.'
+    default: 'SBFL'
     required: false
 outputs:
   total_lines_coverage_percent:
@@ -31,6 +39,12 @@ outputs:
     description: 'HTML table content containing the file path and corresponding coverage percent for files changed in the PR'
   comment_body:
     description: 'The comment body in HTML format'
+  commit_sha:
+    description: 'Last commit SHA (commit due to which this action was executed)'
+  short_commit_sha:
+    description: 'Last commit SHA in shorter format (6ef01b)'
+  commit_link:
+    description: 'Relative link for the last commit'
 runs:
   using: 'node16'
   main: 'dist/index.js'

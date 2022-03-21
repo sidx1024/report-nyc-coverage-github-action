@@ -1,23 +1,40 @@
 const { createHTMLTableFromArray } = require('./utils');
 
-function formatFilesCoverageDataToHTMLTable(changedFilesCoverageData, options = {}) {
-  const { statements = false, branches = false, functions = false, lines = true } = options;
+const LETTER_LABEL = {
+  S: 'Statements',
+  B: 'Branches',
+  F: 'Functions',
+  L: 'Lines',
+};
+
+const LETTER_PERCENT = {
+  S: (data) => addPercentSignOrReturnEmptyString(data.statements.pct),
+  B: (data) => addPercentSignOrReturnEmptyString(data.branches.pct),
+  F: (data) => addPercentSignOrReturnEmptyString(data.functions.pct),
+  L: (data) => addPercentSignOrReturnEmptyString(data.lines.pct),
+};
+
+function formatFilesCoverageDataToHTMLTable(filesCoverageData, options = {}) {
+  const { order = 'SBFL', filePrefix = '' } = options;
+
+  const [o1, o2, o3, o4] = order.split('');
 
   const headers = [
     'File',
-    statements && 'Statements',
-    branches && 'Branches',
-    functions && 'Functions',
-    lines && 'Lines',
+    LETTER_LABEL[o1],
+    LETTER_LABEL[o2],
+    LETTER_LABEL[o3],
+    LETTER_LABEL[o4],
   ].filter(Boolean);
 
-  const rows = changedFilesCoverageData.map(([file, data]) => {
+  const rows = filesCoverageData.map(([file, data]) => {
+    const fileCellValue = filePrefix ? createLink(filePrefix + file, file) : file;
     return [
-      file,
-      statements && addPercentSignOrReturnEmptyString(data.statements.pct),
-      branches && addPercentSignOrReturnEmptyString(data.branches.pct),
-      functions && addPercentSignOrReturnEmptyString(data.functions.pct),
-      lines && addPercentSignOrReturnEmptyString(data.lines.pct),
+      fileCellValue,
+      LETTER_PERCENT[o1]?.(data),
+      LETTER_PERCENT[o2]?.(data),
+      LETTER_PERCENT[o3]?.(data),
+      LETTER_PERCENT[o4]?.(data),
     ].filter(Boolean);
   });
 
@@ -26,6 +43,10 @@ function formatFilesCoverageDataToHTMLTable(changedFilesCoverageData, options = 
 
 function addPercentSignOrReturnEmptyString(input) {
   return Number.isFinite(input) ? input + '%' : '';
+}
+
+function createLink(link, label) {
+  return `<a href="${link}">${label}</a>`;
 }
 
 module.exports = {
