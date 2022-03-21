@@ -109,7 +109,7 @@ async function run() {
 async function getChangedFiles() {
   const { base, head } = github.context.payload.pull_request;
   const { exitCode, output } = await executeCommand(
-    `git diff --name-only --diff-filter=ACMRT ${base.sha} ${head.sha}`,
+    `git diff --name-only --diff-filter=ACMRT origin/${base.sha} origin/${head.sha}`,
   );
   if (exitCode === 0) {
     const filesChanged = output.split(/\r?\n/).filter((line) => line.length > 0);
