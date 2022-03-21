@@ -10048,6 +10048,7 @@ async function run() {
 
   const commentMark = `<!-- ${DEFAULT_COMMENT_MARKER} -->`;
   const commentMode = core.getInput(ActionInput.comment_mode);
+  console.log('commentMode', commentMode);
 
   const octokit = await github.getOctokit(gitHubToken);
   const existingComment =
@@ -10074,6 +10075,8 @@ async function run() {
     core.setOutput(token, value);
   });
 }
+
+// dummy
 
 async function getChangedFiles() {
   const { base, head } = github.context.payload.pull_request;
