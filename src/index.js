@@ -160,7 +160,6 @@ async function findCommentByBody(octokit, commentBodyIncludes) {
 }
 
 function getFilePrefix() {
-  console.log('github.context.payload.pull_request', github.context.payload.pull_request);
   return `../blob/${github.context.payload.pull_request.head.sha}/`;
 }
 
