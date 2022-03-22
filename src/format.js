@@ -16,9 +16,9 @@ const LETTER_PERCENT = {
 
 const COVERAGE_LEVEL_IMAGE = {
   low: 'https://user-images.githubusercontent.com/11299391/159445221-fe3dc085-8c56-4e03-9642-219784c88fe7.svg',
-  medium:
+  medium: 'https://user-images.githubusercontent.com/11299391/159445212-f135c6d7-f354-4e8c-9a9f-28bb3ff1b7b5.svg',
+  high:
     'https://user-images.githubusercontent.com/11299391/159445220-d88b3624-0814-4664-80c8-09f0f2b8e68b.svg',
-  high: 'https://user-images.githubusercontent.com/11299391/159445212-f135c6d7-f354-4e8c-9a9f-28bb3ff1b7b5.svg',
 };
 
 function formatFilesCoverageDataToHTMLTable(filesCoverageData, options = {}) {
