@@ -39,7 +39,8 @@ async function run() {
     fs.readFileSync(coverageSummaryJSONPath, { encoding: 'utf-8' }),
   );
 
-  const changedFiles = await getChangedFiles();
+  const { changedFiles } = await getChangedFiles();
+
   const summary = parseCoverageSummaryJSON(coverageSummaryJSON, {
     basePath: core.getInput(ActionInput.sources_base_path),
     changedFiles,
@@ -115,41 +116,24 @@ async function run() {
 
 async function getChangedFiles() {
   const { base, head } = github.context.payload.pull_request;
-  const fetchCommand = await executeCommand(
-    `git fetch --depth=1 origin +refs/heads/${base.ref}:refs/remotes/origin/${base.ref}`,
-  );
+  const fetchCommand = await exec.getExecOutput(`git fetch --depth=1 origin +refs/heads/${base.ref}:refs/remotes/origin/${base.ref}`, [], {
+    ignoreReturnCode: true,
+  })
   if (fetchCommand.exitCode !== 0) {
-    console.error('An error occurred while executing command.', fetchCommand);
-    return;
+    console.error('A non-fatal error occurred while fetching git history: ', fetchCommand);
+    return { error: true };
   }
 
-  const diffCommand = await executeCommand(
-    `git diff --name-only --diff-filter=ACMRT origin/${base.ref}...`,
-  );
+  const diffCommand = await exec.getExecOutput(`git diff --name-only --diff-filter=ACMRT origin/${base.ref}...${head.ref}`, [], {
+    ignoreReturnCode: true,
+  })
   if (diffCommand.exitCode === 0) {
-    const filesChanged = diffCommand.output.split(/\r?\n/).filter((line) => line.length > 0);
-    return filesChanged;
+    const changedFiles = diffCommand.stdout.split(/\r?\n/).filter((line) => line.length > 0);
+    return { changedFiles };
   } else {
-    console.error('An error occurred while executing command.', diffCommand);
+    console.error('A non-fatal error occurred while performing git diff: ', diffCommand);
+    return { error: true };
   }
-}
-
-async function executeCommand(command) {
-  let output = '';
-
-  const options = {};
-  options.listeners = {
-    stdout: (data) => {
-      output += data.toString();
-    },
-    stderr: (data) => {
-      output += data.toString();
-    },
-  };
-
-  const exitCode = await exec.exec(command, [], options);
-
-  return { exitCode, output };
 }
 
 async function findCommentByBody(octokit, commentBodyIncludes) {
