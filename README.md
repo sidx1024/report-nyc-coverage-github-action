@@ -24,7 +24,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 2 # required to detect changed files
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Run tests
