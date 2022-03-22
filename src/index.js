@@ -54,6 +54,12 @@ async function run() {
       summary[ActionOutput.total_functions_coverage_percent],
     [ActionOutput.total_branches_coverage_percent]:
       summary[ActionOutput.total_branches_coverage_percent],
+    [ActionOutput.total_statements_coverage_percent_raw]:
+      summary[ActionOutput.total_statements_coverage_percent_raw],
+    [ActionOutput.total_functions_coverage_percent_raw]:
+      summary[ActionOutput.total_functions_coverage_percent_raw],
+    [ActionOutput.total_branches_coverage_percent_raw]:
+      summary[ActionOutput.total_branches_coverage_percent_raw],
     [ActionOutput.files_coverage_table]: formatFilesCoverageDataToHTMLTable(
       summary[InternalToken.files_coverage_data],
       {
@@ -109,7 +115,9 @@ async function run() {
 
 async function getChangedFiles() {
   const { base, head } = github.context.payload.pull_request;
-  const fetchCommand = await executeCommand(`git fetch --depth=1 origin +refs/heads/${base.ref}:refs/remotes/origin/${base.ref}`)
+  const fetchCommand = await executeCommand(
+    `git fetch --depth=1 origin +refs/heads/${base.ref}:refs/remotes/origin/${base.ref}`,
+  );
   if (fetchCommand.exitCode !== 0) {
     console.error('An error occurred while executing command.', fetchCommand);
     return;
