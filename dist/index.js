@@ -10128,7 +10128,7 @@ async function getChangedFiles() {
   }
 
   const diffCommand = await executeCommand(
-    `git diff --name-only --diff-filter=ACMRT origin/${base.ref} ${head.sha}`,
+    `git diff --name-only --diff-filter=ACMRT origin/${base.ref}...${head.sha}`,
   );
   if (diffCommand.exitCode === 0) {
     const filesChanged = diffCommand.output.split(/\r?\n/).filter((line) => line.length > 0);
