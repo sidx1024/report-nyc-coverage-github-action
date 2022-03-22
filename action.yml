@@ -24,6 +24,14 @@ inputs:
     description: 'Specify the order for coverage types to be included in the output table. (S: statements, B: branches, F: functions, L: lines). Missing types will be excluded.'
     default: 'SBFL'
     required: false
+  git_fetch_strategy:
+    required: false
+    description: 'This action can internally fetch the required git history to compute the diff of files changed in the pull request. Valid value is "shallow_since". By default, the action will not fetch any git history and assume that a full checkout (fetch-depth: 0) was performed prior to this action usage. The option "shallow_since" is useful when the git repository is huge and a full checkout takes a long time.'
+    default: ''
+  git_fetch_shallow_since:
+    required: false
+    description: 'Argument value for "--shallow-since" argument for the git fetch command. Known valid format is YYYY-MM-DD, unix timestamp or a relative time string like "10 days", "2 years" etc. Only applicable if git_fetch_strategy is "shallow_since".'
+    default: '30 days'
 outputs:
   total_lines_coverage_percent:
     description: 'Total lines coverage percent (XX.XX%) with level indicator'
