@@ -10078,17 +10078,20 @@ async function run() {
 
 async function getChangedFiles() {
   const { base, head } = github.context.payload.pull_request;
-  const { exitCode, output } = await executeCommand(
-    `git diff --name-only --diff-filter=ACMRT ${base.sha} ${head.sha}`,
+  const fetchCommand = await executeCommand(`git fetch --depth=1 origin +refs/heads/${base.ref}:refs/remotes/origin/${base.ref}`)
+  if (fetchCommand.exitCode !== 0) {
+    console.error('An error occurred while executing command.', fetchCommand);
+    return;
+  }
+
+  const diffCommand = await executeCommand(
+    `git diff --name-only --diff-filter=ACMRT origin/${base.ref} ${head.sha}`,
   );
-  if (exitCode === 0) {
-    const filesChanged = output.split(/\r?\n/).filter((line) => line.length > 0);
+  if (diffCommand.exitCode === 0) {
+    const filesChanged = diffCommand.output.split(/\r?\n/).filter((line) => line.length > 0);
     return filesChanged;
   } else {
-    console.error('An error occurred while executing command.', {
-      exitCode,
-      output,
-    });
+    console.error('An error occurred while executing command.', diffCommand);
   }
 }
 
