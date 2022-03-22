@@ -20,5 +20,5 @@ jobs:
         uses: ./
         with:
           coverage_output_directory: 'coverage'
-          git_fetch_strategy: 'shallow-since'
+          git_fetch_strategy: 'shallow_since'
           git_fetch_shallow_since: '10 days'
