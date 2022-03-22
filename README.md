@@ -93,18 +93,22 @@ jobs:
 <!-- end inputs -->
 <!-- start outputs -->
 
-| **Output**                          | **Description**                                                                                            | **Default** | **Required** |
-| :---------------------------------- | :--------------------------------------------------------------------------------------------------------- | ----------- | ------------ |
-| `total_lines_coverage_percent`      | Total lines coverage percent (XX.XX%)                                                                      |             |              |
-| `total_branches_coverage_percent`   | Total branches coverage percent (XX.XX%)                                                                   |             |              |
-| `total_statements_coverage_percent` | Total statements coverage percent (XX.XX%)                                                                 |             |              |
-| `total_functions_coverage_percent`  | Total functions coverage percent (XX.XX%)                                                                  |             |              |
-| `files_coverage_table`              | HTML table content containing the file path and corresponding coverage percent for all files               |             |              |
-| `changed_files_coverage_table`      | HTML table content containing the file path and corresponding coverage percent for files changed in the PR |             |              |
-| `comment_body`                      | The comment body in HTML format                                                                            |             |              |
-| `commit_sha`                        | Last commit SHA (commit due to which this action was executed)                                             |             |              |
-| `short_commit_sha`                  | Last commit SHA in shorter format (6ef01b)                                                                 |             |              |
-| `commit_link`                       | Relative link for the last commit                                                                          |             |              |
+| **Output**                              | **Description**                                                                                            | **Default** | **Required** |
+| :-------------------------------------- | :--------------------------------------------------------------------------------------------------------- | ----------- | ------------ |
+| `total_lines_coverage_percent`          | Total lines coverage percent (XX.XX%) with level indicator                                                 |             |              |
+| `total_branches_coverage_percent`       | Total branches coverage percent (XX.XX%) with level indicator                                              |             |              |
+| `total_statements_coverage_percent`     | Total statements coverage percent (XX.XX%) with level indicator                                            |             |              |
+| `total_functions_coverage_percent`      | Total functions coverage percent (XX.XX%) with level indicator                                             |             |              |
+| `total_lines_coverage_percent_raw`      | Total lines coverage percent (XX.XX) without percent and level indicator                                   |             |              |
+| `total_branches_coverage_percent_raw`   | Total branches coverage percent (XX.XX) without percent and level indicator                                |             |              |
+| `total_statements_coverage_percent_raw` | Total statements coverage percent (XX.XX) without percent and level indicator                              |             |              |
+| `total_functions_coverage_percent_raw`  | Total functions coverage percent (XX.XX) without percent and level indicator                               |             |              |
+| `files_coverage_table`                  | HTML table content containing the file path and corresponding coverage percent for all files               |             |              |
+| `changed_files_coverage_table`          | HTML table content containing the file path and corresponding coverage percent for files changed in the PR |             |              |
+| `comment_body`                          | The comment body in HTML format                                                                            |             |              |
+| `commit_sha`                            | Last commit SHA (commit due to which this action was executed)                                             |             |              |
+| `short_commit_sha`                      | Last commit SHA in shorter format (6ef01b)                                                                 |             |              |
+| `commit_link`                           | Relative link for the last commit                                                                          |             |              |
 
 <!-- end outputs -->
 <!-- start [.github/ghdocs/examples/] -->

@@ -9,7 +9,7 @@ t.test('formatFilesCoverageDataToHTMLTable', async () => {
 
   const expected = readFile('formatted-table.html').trim();
 
-  // require('fs').writeFileSync('./formatted-table.html', actual);
+  require('fs').writeFileSync('./formatted-table.html', actual);
 
   t.equal(actual, expected);
 });
