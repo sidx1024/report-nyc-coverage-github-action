@@ -6,7 +6,7 @@ module.exports = {
     comment_mode: 'comment_mode',
     files_coverage_table_output_type_order: 'files_coverage_table_output_type_order',
     git_fetch_strategy: 'git_fetch_strategy',
-    git_fetch_shallow_since: 'git_fetch_shallow_since'
+    git_fetch_shallow_since: 'git_fetch_shallow_since',
   },
   ActionOutput: {
     total_lines_coverage_percent: 'total_lines_coverage_percent',
@@ -29,7 +29,6 @@ module.exports = {
     changed_files_coverage_data: 'changed_files_coverage_data',
   },
   GitFetchStrategy: {
-    PRE_CHECKOUT: 'pre_checkout',
     SHALLOW_SINCE: 'shallow_since',
   },
   DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME: 'coverage-summary.json',
