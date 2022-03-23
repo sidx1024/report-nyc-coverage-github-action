@@ -31,7 +31,7 @@ jobs:
           fetch-depth: 1000 # Set this according to the size of your git history
 
       - name: Fetch base
-        run: git fetch origin ${{ github.event.pull_request.base.ref }}
+        run: git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1000
         
       - name: Run tests
         run: npm run test
