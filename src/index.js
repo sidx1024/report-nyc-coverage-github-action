@@ -120,6 +120,7 @@ async function getChangedFiles() {
   const { base, head } = github.context.payload.pull_request;
 
   console.log('github', JSON.stringify(github, null, 2));
+  console.log('github.event', JSON.stringify(github.event, null, 2));
 
   if (fetchStrategy === GitFetchStrategy.SHALLOW_SINCE) {
     const shallowSince = core.getInput(ActionInput.git_fetch_shallow_since);
