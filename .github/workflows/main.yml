@@ -9,6 +9,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1000
+
+      - name: Fetch base
+        run: git fetch origin ${{ github.event.pull_request.base.ref }}
 
       - name: Run tests
         run: |
@@ -20,5 +24,3 @@ jobs:
         uses: ./
         with:
           coverage_output_directory: 'coverage'
-          git_fetch_strategy: 'shallow_since'
-          git_fetch_shallow_since: '10 days'

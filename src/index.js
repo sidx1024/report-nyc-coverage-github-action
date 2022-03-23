@@ -14,7 +14,6 @@ const {
   ActionInput,
   DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
   DEFAULT_COMMENT_MARKER,
-  GitFetchStrategy,
 } = require('./constants');
 const { replaceTokens } = require('./utils');
 const { parseCoverageSummaryJSON } = require('./parse');
@@ -116,23 +115,7 @@ async function run() {
 // dummy
 
 async function getChangedFiles() {
-  const fetchStrategy = core.getInput(ActionInput.git_fetch_strategy);
   const { base, head } = github.context.payload.pull_request;
-
-  if (fetchStrategy === GitFetchStrategy.SHALLOW_SINCE) {
-    const shallowSince = core.getInput(ActionInput.git_fetch_shallow_since);
-    const fetchCommand = await exec.getExecOutput(
-      `git fetch --shallow-since="${shallowSince}"`,
-      [],
-      {
-        ignoreReturnCode: true,
-      },
-    );
-    if (fetchCommand.exitCode !== 0) {
-      console.error('A non-fatal error occurred while fetching git history: ', fetchCommand);
-      return { error: true };
-    }
-  }
 
   const diffCommand = await exec.getExecOutput(
     `git diff --name-only --diff-filter=ACMRT origin/${base.ref}...${head.sha}`,
