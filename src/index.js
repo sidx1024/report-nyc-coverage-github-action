@@ -113,7 +113,7 @@ async function run() {
   });
 }
 
-// dummy
+// dummy 2
 
 async function getChangedFiles() {
   const fetchStrategy = core.getInput(ActionInput.git_fetch_strategy);
