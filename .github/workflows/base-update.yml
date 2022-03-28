@@ -17,8 +17,8 @@ jobs:
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
         with:
-          workflow: main.yml
-          workflow_conclusion: completed
+          workflow: 'main.yml'
+          workflow_conclusion: success
           commit: ${{github.event.pull_request.base.sha}}
           name: 'test-coverage-output'
           path: artifacts
