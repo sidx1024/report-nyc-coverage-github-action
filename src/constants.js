@@ -29,3 +29,5 @@ module.exports = {
   DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME: 'coverage-summary.json',
   DEFAULT_COMMENT_MARKER: 'report-nyc-coverage-github-action-comment-mark',
 };
+
+// 2
