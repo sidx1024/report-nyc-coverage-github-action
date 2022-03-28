@@ -8,10 +8,15 @@ jobs:
     runs-on: ubuntu-latest
     name: Test and report
     steps:
-      - name: Download coverage artifact
-        uses: actions/download-artifact@v2
-        with:
-          path: artifacts
+    - name: Download artifact
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        workflow: main.yml
+        workflow_conclusion: success
+        commit: ${{github.event.pull_request.base.sha}}
+        name: 'test-coverage-output'
+        path: artifacts
+        search_artifacts: 'test-coverage-output'
 
       - name: Check file existence
         id: check_files
