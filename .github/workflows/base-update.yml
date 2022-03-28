@@ -35,4 +35,4 @@ jobs:
         if: steps.check_files.outputs.files_exists == 'true'
         # Only runs if all of the files exists
         with:
-          coverage_output_directory: 'artifacts/test-coverage-output/'
+          coverage_output_directory: 'artifacts/'
