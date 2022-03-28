@@ -1,0 +1,27 @@
+name: Update coverage comment
+on:
+  pull_request:
+    types: [edited]
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: Test and report
+    steps:
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Check file existence
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: 'artifacts/test-coverage-output/coverage-summary.json'
+
+      - name: File exists
+        uses: ./
+        if: steps.check_files.outputs.files_exists == 'true'
+        # Only runs if all of the files exists
+        with:
+          coverage_output_directory: 'artifacts/test-coverage-output/'
