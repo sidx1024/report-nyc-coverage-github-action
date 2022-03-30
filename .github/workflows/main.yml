@@ -19,8 +19,18 @@ jobs:
           npm i
           npm run test
 
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-coverage-output
+          path: coverage
+
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
       - name: Report coverage
-        id: hello
         uses: ./
         with:
-          coverage_output_directory: 'coverage'
+          coverage_output_directory: 'artifacts/test-coverage-output/'
