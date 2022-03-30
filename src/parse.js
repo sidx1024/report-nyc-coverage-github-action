@@ -57,9 +57,12 @@ function parseCoverageSummaryJSON(json, { changedFiles, basePath, baseCoverageSu
     [ActionOutput.total_statements_coverage_percent_raw]: total.statements.pct,
     [ActionOutput.total_functions_coverage_percent_raw]: total.functions.pct,
     [ActionOutput.total_branches_coverage_percent_raw]: total.branches.pct,
+  });
+
+  const other = {
     [InternalToken.files_coverage_data]: coverageData,
     [InternalToken.changed_files_coverage_data]: changedFilesCoverageData,
-  });
+  };
 
   if (baseCoverageSummaryJSON) {
     const baseTotal = baseCoverageSummaryJSON.total;
@@ -104,7 +107,7 @@ function parseCoverageSummaryJSON(json, { changedFiles, basePath, baseCoverageSu
     });
   }
 
-  return output;
+  return { output, other };
 }
 
 module.exports = {

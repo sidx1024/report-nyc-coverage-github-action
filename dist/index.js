@@ -9788,9 +9788,12 @@ function parseCoverageSummaryJSON(json, { changedFiles, basePath, baseCoverageSu
     [ActionOutput.total_statements_coverage_percent_raw]: total.statements.pct,
     [ActionOutput.total_functions_coverage_percent_raw]: total.functions.pct,
     [ActionOutput.total_branches_coverage_percent_raw]: total.branches.pct,
+  });
+
+  const other = {
     [InternalToken.files_coverage_data]: coverageData,
     [InternalToken.changed_files_coverage_data]: changedFilesCoverageData,
-  });
+  };
 
   if (baseCoverageSummaryJSON) {
     const baseTotal = baseCoverageSummaryJSON.total;
@@ -9835,7 +9838,7 @@ function parseCoverageSummaryJSON(json, { changedFiles, basePath, baseCoverageSu
     });
   }
 
-  return output;
+  return { output, other };
 }
 
 module.exports = {
@@ -10172,7 +10175,7 @@ async function run() {
 
   const { changedFiles } = await getChangedFiles();
 
-  const summary = parseCoverageSummaryJSON(coverageSummaryJSON, {
+  const { output, other } = parseCoverageSummaryJSON(coverageSummaryJSON, {
     basePath: core.getInput(ActionInput.sources_base_path),
     changedFiles,
     baseCoverageSummaryJSON,
@@ -10180,28 +10183,16 @@ async function run() {
 
   const commitSHA = github.context.payload.pull_request.head.sha;
   let outputs = {
-    [ActionOutput.total_lines_coverage_percent]: summary[ActionOutput.total_lines_coverage_percent],
-    [ActionOutput.total_statements_coverage_percent]:
-      summary[ActionOutput.total_statements_coverage_percent],
-    [ActionOutput.total_functions_coverage_percent]:
-      summary[ActionOutput.total_functions_coverage_percent],
-    [ActionOutput.total_branches_coverage_percent]:
-      summary[ActionOutput.total_branches_coverage_percent],
-    [ActionOutput.total_statements_coverage_percent_raw]:
-      summary[ActionOutput.total_statements_coverage_percent_raw],
-    [ActionOutput.total_functions_coverage_percent_raw]:
-      summary[ActionOutput.total_functions_coverage_percent_raw],
-    [ActionOutput.total_branches_coverage_percent_raw]:
-      summary[ActionOutput.total_branches_coverage_percent_raw],
+    ...output,
     [ActionOutput.files_coverage_table]: formatFilesCoverageDataToHTMLTable(
-      summary[InternalToken.files_coverage_data],
+      other[InternalToken.files_coverage_data],
       {
         order: core.getInput(ActionInput.files_coverage_table_output_type_order),
         filePrefix: getFilePrefix(),
       },
     ),
     [ActionOutput.changed_files_coverage_table]: formatFilesCoverageDataToHTMLTable(
-      summary[InternalToken.changed_files_coverage_data],
+      other[InternalToken.changed_files_coverage_data],
       {
         order: core.getInput(ActionInput.files_coverage_table_output_type_order),
         filePrefix: getFilePrefix(),
