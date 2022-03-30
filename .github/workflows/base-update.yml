@@ -36,3 +36,4 @@ jobs:
         # Only runs if all of the files exists
         with:
           coverage_output_directory: 'artifacts/'
+          base_coverage_output_directory: 'base-artifacts/'

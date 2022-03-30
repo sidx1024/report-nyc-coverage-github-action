@@ -9572,20 +9572,43 @@ function wrappy (fn, cb) {
 module.exports = {
   ActionInput: {
     coverage_output_directory: 'coverage_output_directory',
+    base_coverage_output_directory: 'base_coverage_output_directory',
     sources_base_path: 'sources_base_path',
     comment_template_file: 'comment_template_file',
     comment_mode: 'comment_mode',
     files_coverage_table_output_type_order: 'files_coverage_table_output_type_order',
   },
   ActionOutput: {
+    // Total Percent
     total_lines_coverage_percent: 'total_lines_coverage_percent',
     total_statements_coverage_percent: 'total_statements_coverage_percent',
     total_functions_coverage_percent: 'total_functions_coverage_percent',
     total_branches_coverage_percent: 'total_branches_coverage_percent',
+    // Base Total Percent
+    base_total_lines_coverage_percent: 'base_total_lines_coverage_percent',
+    base_total_statements_coverage_percent: 'base_total_statements_coverage_percent',
+    base_total_functions_coverage_percent: 'base_total_functions_coverage_percent',
+    base_total_branches_coverage_percent: 'base_total_branches_coverage_percent',
+    // Total Percent Diff
+    total_lines_coverage_percent_diff: 'total_lines_coverage_percent_diff',
+    total_statements_coverage_percent_diff: 'total_statements_coverage_percent_diff',
+    total_functions_coverage_percent_diff: 'total_functions_coverage_percent_diff',
+    total_branches_coverage_percent_diff: 'total_branches_coverage_percent_diff',
+    // Total Percent Diff Raw
+    total_lines_coverage_percent_diff_raw: 'total_lines_coverage_percent_diff_raw',
+    total_statements_coverage_percent_diff_raw: 'total_statements_coverage_percent_diff_raw',
+    total_functions_coverage_percent_diff_raw: 'total_functions_coverage_percent_diff_raw',
+    total_branches_coverage_percent_diff_raw: 'total_branches_coverage_percent_diff_raw',
+    // Total Percent Raw
     total_lines_coverage_percent_raw: 'total_lines_coverage_percent_raw',
     total_statements_coverage_percent_raw: 'total_statements_coverage_percent_raw',
     total_functions_coverage_percent_raw: 'total_functions_coverage_percent_raw',
     total_branches_coverage_percent_raw: 'total_branches_coverage_percent_raw',
+    // Base Total Percent Raw
+    base_total_lines_coverage_percent_raw: 'base_total_lines_coverage_percent_raw',
+    base_total_statements_coverage_percent_raw: 'base_total_statements_coverage_percent_raw',
+    base_total_functions_coverage_percent_raw: 'base_total_functions_coverage_percent_raw',
+    base_total_branches_coverage_percent_raw: 'base_total_branches_coverage_percent_raw',
     files_coverage_table: 'files_coverage_table',
     changed_files_coverage_table: 'changed_files_coverage_table',
     comment_body: 'comment_body',
@@ -9600,6 +9623,8 @@ module.exports = {
   DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME: 'coverage-summary.json',
   DEFAULT_COMMENT_MARKER: 'report-nyc-coverage-github-action-comment-mark',
 };
+
+// 2
 
 
 /***/ }),
@@ -9625,9 +9650,9 @@ const LETTER_PERCENT = {
 
 const COVERAGE_LEVEL_IMAGE = {
   low: 'https://user-images.githubusercontent.com/11299391/159445221-fe3dc085-8c56-4e03-9642-219784c88fe7.svg',
-  medium: 'https://user-images.githubusercontent.com/11299391/159445212-f135c6d7-f354-4e8c-9a9f-28bb3ff1b7b5.svg',
-  high:
-    'https://user-images.githubusercontent.com/11299391/159445220-d88b3624-0814-4664-80c8-09f0f2b8e68b.svg',
+  medium:
+    'https://user-images.githubusercontent.com/11299391/159445212-f135c6d7-f354-4e8c-9a9f-28bb3ff1b7b5.svg',
+  high: 'https://user-images.githubusercontent.com/11299391/159445220-d88b3624-0814-4664-80c8-09f0f2b8e68b.svg',
 };
 
 function formatFilesCoverageDataToHTMLTable(filesCoverageData, options = {}) {
@@ -9668,6 +9693,15 @@ function formatPercentWithIndicator(percent) {
   return imageHTML + '&nbsp;' + percent + '%';
 }
 
+function formatPercentDiff(percent) {
+  if (!Number.isFinite(percent)) {
+    return '';
+  }
+
+  const percentWithSign = percent >= 0 ? `+${percent}` : `${percent}`;
+  return percentWithSign;
+}
+
 function getCoverageLevelImage(percent) {
   // https://github.com/istanbuljs/istanbuljs/blob/c1559005b3bb318da01f505740adb0e782aaf14e/packages/istanbul-lib-report/lib/watermarks.js
   if (percent >= 80) {
@@ -9686,6 +9720,7 @@ function createLink(link, label) {
 module.exports = {
   formatFilesCoverageDataToHTMLTable,
   formatPercentWithIndicator,
+  formatPercentDiff,
 };
 
 
@@ -9696,9 +9731,36 @@ module.exports = {
 
 const { ActionOutput, InternalToken } = __nccwpck_require__(4438);
 const { trimBasePath } = __nccwpck_require__(1608);
-const { formatPercentWithIndicator } = __nccwpck_require__(5945);
+const { formatPercentWithIndicator, formatPercentDiff } = __nccwpck_require__(5945);
 
-function parseCoverageSummaryJSON(json, { changedFiles, basePath } = {}) {
+const OUTPUT_BLANK = {
+  [ActionOutput.total_lines_coverage_percent]: '?',
+  [ActionOutput.total_statements_coverage_percent]: '?',
+  [ActionOutput.total_functions_coverage_percent]: '?',
+  [ActionOutput.total_branches_coverage_percent]: '?',
+  [ActionOutput.total_lines_coverage_percent_raw]: '?',
+  [ActionOutput.total_statements_coverage_percent_raw]: '?',
+  [ActionOutput.total_functions_coverage_percent_raw]: '?',
+  [ActionOutput.total_branches_coverage_percent_raw]: '?',
+  [ActionOutput.base_total_lines_coverage_percent]: '?',
+  [ActionOutput.base_total_statements_coverage_percent]: '?',
+  [ActionOutput.base_total_functions_coverage_percent]: '?',
+  [ActionOutput.base_total_branches_coverage_percent]: '?',
+  [ActionOutput.base_total_lines_coverage_percent_raw]: '?',
+  [ActionOutput.base_total_statements_coverage_percent_raw]: '?',
+  [ActionOutput.base_total_functions_coverage_percent_raw]: '?',
+  [ActionOutput.base_total_branches_coverage_percent_raw]: '?',
+  [ActionOutput.total_lines_coverage_percent_diff]: '?',
+  [ActionOutput.total_statements_coverage_percent_diff]: '?',
+  [ActionOutput.total_functions_coverage_percent_diff]: '?',
+  [ActionOutput.total_branches_coverage_percent_diff]: '?',
+  [ActionOutput.total_lines_coverage_percent_diff_raw]: '?',
+  [ActionOutput.total_statements_coverage_percent_diff_raw]: '?',
+  [ActionOutput.total_functions_coverage_percent_diff_raw]: '?',
+  [ActionOutput.total_branches_coverage_percent_diff_raw]: '?',
+};
+
+function parseCoverageSummaryJSON(json, { changedFiles, basePath, baseCoverageSummaryJSON } = {}) {
   const total = json.total;
   delete json.total;
 
@@ -9713,10 +9775,14 @@ function parseCoverageSummaryJSON(json, { changedFiles, basePath } = {}) {
     });
   }
 
-  return {
+  const output = Object.assign({}, OUTPUT_BLANK, {
     [ActionOutput.total_lines_coverage_percent]: formatPercentWithIndicator(total.lines.pct),
-    [ActionOutput.total_statements_coverage_percent]: formatPercentWithIndicator(total.statements.pct),
-    [ActionOutput.total_functions_coverage_percent]: formatPercentWithIndicator(total.functions.pct),
+    [ActionOutput.total_statements_coverage_percent]: formatPercentWithIndicator(
+      total.statements.pct,
+    ),
+    [ActionOutput.total_functions_coverage_percent]: formatPercentWithIndicator(
+      total.functions.pct,
+    ),
     [ActionOutput.total_branches_coverage_percent]: formatPercentWithIndicator(total.branches.pct),
     [ActionOutput.total_lines_coverage_percent_raw]: total.lines.pct,
     [ActionOutput.total_statements_coverage_percent_raw]: total.statements.pct,
@@ -9724,7 +9790,52 @@ function parseCoverageSummaryJSON(json, { changedFiles, basePath } = {}) {
     [ActionOutput.total_branches_coverage_percent_raw]: total.branches.pct,
     [InternalToken.files_coverage_data]: coverageData,
     [InternalToken.changed_files_coverage_data]: changedFilesCoverageData,
-  };
+  });
+
+  if (baseCoverageSummaryJSON) {
+    const baseTotal = baseCoverageSummaryJSON.total;
+    delete baseTotal.total;
+
+    Object.assign(output, {
+      [ActionOutput.base_total_lines_coverage_percent]: formatPercentWithIndicator(
+        baseTotal.lines.pct,
+      ),
+      [ActionOutput.base_total_statements_coverage_percent]: formatPercentWithIndicator(
+        baseTotal.statements.pct,
+      ),
+      [ActionOutput.base_total_functions_coverage_percent]: formatPercentWithIndicator(
+        baseTotal.functions.pct,
+      ),
+      [ActionOutput.base_total_branches_coverage_percent]: formatPercentWithIndicator(
+        baseTotal.branches.pct,
+      ),
+      [ActionOutput.base_total_lines_coverage_percent_raw]: baseTotal.lines.pct,
+      [ActionOutput.base_total_statements_coverage_percent_raw]: baseTotal.statements.pct,
+      [ActionOutput.base_total_functions_coverage_percent_raw]: baseTotal.functions.pct,
+      [ActionOutput.base_total_branches_coverage_percent_raw]: baseTotal.branches.pct,
+      [ActionOutput.total_lines_coverage_percent_diff]: formatPercentDiff(
+        total.lines.pct - baseTotal.lines.pct,
+      ),
+      [ActionOutput.total_statements_coverage_percent_diff]: formatPercentDiff(
+        total.statements.pct - baseTotal.statements.pct,
+      ),
+      [ActionOutput.total_functions_coverage_percent_diff]: formatPercentDiff(
+        total.functions.pct - baseTotal.functions.pct,
+      ),
+      [ActionOutput.total_branches_coverage_percent_diff]: formatPercentDiff(
+        total.branches.pct - baseTotal.branches.pct,
+      ),
+      [ActionOutput.total_lines_coverage_percent_diff_raw]: total.lines.pct - baseTotal.lines.pct,
+      [ActionOutput.total_statements_coverage_percent_diff_raw]:
+        total.statements.pct - baseTotal.statements.pct,
+      [ActionOutput.total_functions_coverage_percent_diff_raw]:
+        total.functions.pct - baseTotal.functions.pct,
+      [ActionOutput.total_branches_coverage_percent_diff_raw]:
+        total.branches.pct - baseTotal.branches.pct,
+    });
+  }
+
+  return output;
 }
 
 module.exports = {
@@ -10043,11 +10154,28 @@ async function run() {
     fs.readFileSync(coverageSummaryJSONPath, { encoding: 'utf-8' }),
   );
 
+  let baseCoverageSummaryJSON;
+  const baseCoverageOutputDirectory = core.getInput(ActionInput.base_coverage_output_directory);
+  if (baseCoverageOutputDirectory) {
+    const baseCoverageSummaryJSONPath = path.resolve(
+      baseCoverageOutputDirectory,
+      DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
+    );
+    try {
+      baseCoverageSummaryJSON = JSON.parse(
+        fs.readFileSync(baseCoverageSummaryJSONPath, { encoding: 'utf-8' }),
+      );
+    } catch (e) {
+      console.warn('Base coverage json was not readable.');
+    }
+  }
+
   const { changedFiles } = await getChangedFiles();
 
   const summary = parseCoverageSummaryJSON(coverageSummaryJSON, {
     basePath: core.getInput(ActionInput.sources_base_path),
     changedFiles,
+    baseCoverageSummaryJSON,
   });
 
   const commitSHA = github.context.payload.pull_request.head.sha;
@@ -10162,6 +10290,8 @@ function getFilePrefix() {
 run().catch((error) => {
   core.setFailed(error.stack || error.message);
 });
+
+// 1
 
 })();
 

@@ -32,7 +32,7 @@ jobs:
 
       - name: Fetch base
         run: git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1000
-        
+
       - name: Run tests
         run: npm run test
 

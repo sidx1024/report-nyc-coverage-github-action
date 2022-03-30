@@ -39,11 +39,28 @@ async function run() {
     fs.readFileSync(coverageSummaryJSONPath, { encoding: 'utf-8' }),
   );
 
+  let baseCoverageSummaryJSON;
+  const baseCoverageOutputDirectory = core.getInput(ActionInput.base_coverage_output_directory);
+  if (baseCoverageOutputDirectory) {
+    const baseCoverageSummaryJSONPath = path.resolve(
+      baseCoverageOutputDirectory,
+      DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
+    );
+    try {
+      baseCoverageSummaryJSON = JSON.parse(
+        fs.readFileSync(baseCoverageSummaryJSONPath, { encoding: 'utf-8' }),
+      );
+    } catch (e) {
+      console.warn('Base coverage json was not readable.');
+    }
+  }
+
   const { changedFiles } = await getChangedFiles();
 
   const summary = parseCoverageSummaryJSON(coverageSummaryJSON, {
     basePath: core.getInput(ActionInput.sources_base_path),
     changedFiles,
+    baseCoverageSummaryJSON,
   });
 
   const commitSHA = github.context.payload.pull_request.head.sha;

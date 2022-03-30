@@ -30,7 +30,24 @@ jobs:
         with:
           path: artifacts
 
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: 'main.yml'
+          workflow_conclusion: success
+          commit: ${{github.event.pull_request.base.sha}}
+          name: 'test-coverage-output'
+          path: base-artifacts
+          search_artifacts: 'test-coverage-output'
+
+      - name: Check file existence
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: 'artifacts/coverage-summary.json'
+
       - name: Report coverage
         uses: ./
         with:
           coverage_output_directory: 'artifacts/test-coverage-output/'
+          base_coverage_output_directory: ${{steps.check_files.outputs.files_exists == 'true' && 'base-artifacts/test-coverage-output/' || ''}}
