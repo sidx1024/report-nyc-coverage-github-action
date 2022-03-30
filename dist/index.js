@@ -9617,7 +9617,7 @@ module.exports = {
     commit_link: 'commit_link',
     base_commit_sha: 'base_commit_sha',
     base_short_commit_sha: 'base_short_commit_sha',
-    base_commit_link: 'commit_link',
+    base_commit_link: 'base_commit_link',
     base_ref: 'base_ref',
   },
   InternalToken: {
