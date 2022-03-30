@@ -16,6 +16,7 @@ jobs:
 
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
+        continue-on-error: true
         with:
           workflow: 'main.yml'
           workflow_conclusion: success
@@ -26,6 +27,7 @@ jobs:
 
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
+        continue-on-error: true
         with:
           workflow: 'main.yml'
           workflow_conclusion: success
