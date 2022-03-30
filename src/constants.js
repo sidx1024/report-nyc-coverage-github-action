@@ -44,6 +44,10 @@ module.exports = {
     commit_sha: 'commit_sha',
     short_commit_sha: 'short_commit_sha',
     commit_link: 'commit_link',
+    base_commit_sha: 'base_commit_sha',
+    base_short_commit_sha: 'base_short_commit_sha',
+    base_commit_link: 'commit_link',
+    base_ref: 'base_ref',
   },
   InternalToken: {
     files_coverage_data: 'files_coverage_data',

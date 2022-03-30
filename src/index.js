@@ -64,6 +64,7 @@ async function run() {
   });
 
   const commitSHA = github.context.payload.pull_request.head.sha;
+  const baseCommitSHA = github.context.payload.pull_request.base.sha;
   let outputs = {
     ...output,
     [ActionOutput.files_coverage_table]: formatFilesCoverageDataToHTMLTable(
@@ -83,6 +84,10 @@ async function run() {
     [ActionOutput.commit_sha]: commitSHA,
     [ActionOutput.short_commit_sha]: commitSHA.substr(0, 7),
     [ActionOutput.commit_link]: `${github.context.payload.pull_request.number}/commits/${commitSHA}`,
+    [ActionOutput.base_commit_sha]: baseCommitSHA,
+    [ActionOutput.base_short_commit_sha]: baseCommitSHA.substr(0, 7),
+    [ActionOutput.base_commit_link]: `../${github.context.payload.pull_request.number}/commit/${baseCommitSHA}`,
+    [ActionOutput.base_ref]: `../${github.context.payload.pull_request.base.ref}/commit/${baseCommitSHA}`,
   };
 
   const commentTemplateMDPath = path.resolve(core.getInput(ActionInput.comment_template_file));
