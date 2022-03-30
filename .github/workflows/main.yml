@@ -50,4 +50,4 @@ jobs:
         uses: ./
         with:
           coverage_output_directory: 'artifacts/test-coverage-output/'
-          base_coverage_output_directory: ${{steps.check_files.outputs.files_exists == 'true' && 'base-artifacts/test-coverage-output/' || ''}}
+          base_coverage_output_directory: ${{steps.check_files.outputs.files_exists == 'true' && 'base-artifacts/' || ''}}
