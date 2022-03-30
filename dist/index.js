@@ -9698,8 +9698,13 @@ function formatPercentDiff(percent) {
     return '';
   }
 
-  const percentWithSign = percent >= 0 ? `+${percent}` : `${percent}`;
-  return percentWithSign;
+  const roundedPercent = `${Number(percent.toFixed(2))}%`;
+
+  if (percent >= 0) {
+    return '+' + roundedPercent;
+  }
+
+  return roundedPercent;
 }
 
 function getCoverageLevelImage(percent) {
