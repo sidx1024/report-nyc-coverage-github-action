@@ -39,37 +39,43 @@ async function run() {
     fs.readFileSync(coverageSummaryJSONPath, { encoding: 'utf-8' }),
   );
 
+  let baseCoverageSummaryJSON;
+  const baseCoverageOutputDirectory = core.getInput(ActionInput.base_coverage_output_directory);
+  if (baseCoverageOutputDirectory) {
+    const baseCoverageSummaryJSONPath = path.resolve(
+      baseCoverageOutputDirectory,
+      DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
+    );
+    try {
+      baseCoverageSummaryJSON = JSON.parse(
+        fs.readFileSync(baseCoverageSummaryJSONPath, { encoding: 'utf-8' }),
+      );
+    } catch (e) {
+      console.warn('Base coverage json was not readable.');
+    }
+  }
+
   const { changedFiles } = await getChangedFiles();
 
-  const summary = parseCoverageSummaryJSON(coverageSummaryJSON, {
+  const { output, other } = parseCoverageSummaryJSON(coverageSummaryJSON, {
     basePath: core.getInput(ActionInput.sources_base_path),
     changedFiles,
+    baseCoverageSummaryJSON,
   });
 
   const commitSHA = github.context.payload.pull_request.head.sha;
+  const baseCommitSHA = github.context.payload.pull_request.base.sha;
   let outputs = {
-    [ActionOutput.total_lines_coverage_percent]: summary[ActionOutput.total_lines_coverage_percent],
-    [ActionOutput.total_statements_coverage_percent]:
-      summary[ActionOutput.total_statements_coverage_percent],
-    [ActionOutput.total_functions_coverage_percent]:
-      summary[ActionOutput.total_functions_coverage_percent],
-    [ActionOutput.total_branches_coverage_percent]:
-      summary[ActionOutput.total_branches_coverage_percent],
-    [ActionOutput.total_statements_coverage_percent_raw]:
-      summary[ActionOutput.total_statements_coverage_percent_raw],
-    [ActionOutput.total_functions_coverage_percent_raw]:
-      summary[ActionOutput.total_functions_coverage_percent_raw],
-    [ActionOutput.total_branches_coverage_percent_raw]:
-      summary[ActionOutput.total_branches_coverage_percent_raw],
+    ...output,
     [ActionOutput.files_coverage_table]: formatFilesCoverageDataToHTMLTable(
-      summary[InternalToken.files_coverage_data],
+      other[InternalToken.files_coverage_data],
       {
         order: core.getInput(ActionInput.files_coverage_table_output_type_order),
         filePrefix: getFilePrefix(),
       },
     ),
     [ActionOutput.changed_files_coverage_table]: formatFilesCoverageDataToHTMLTable(
-      summary[InternalToken.changed_files_coverage_data],
+      other[InternalToken.changed_files_coverage_data],
       {
         order: core.getInput(ActionInput.files_coverage_table_output_type_order),
         filePrefix: getFilePrefix(),
@@ -78,6 +84,10 @@ async function run() {
     [ActionOutput.commit_sha]: commitSHA,
     [ActionOutput.short_commit_sha]: commitSHA.substr(0, 7),
     [ActionOutput.commit_link]: `${github.context.payload.pull_request.number}/commits/${commitSHA}`,
+    [ActionOutput.base_commit_sha]: baseCommitSHA,
+    [ActionOutput.base_short_commit_sha]: baseCommitSHA.substr(0, 7),
+    [ActionOutput.base_commit_link]: `../commit/${baseCommitSHA}`,
+    [ActionOutput.base_ref]: `${github.context.payload.pull_request.base.ref}`,
   };
 
   const commentTemplateMDPath = path.resolve(core.getInput(ActionInput.comment_template_file));

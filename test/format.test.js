@@ -4,7 +4,7 @@ const { formatFilesCoverageDataToHTMLTable } = require('../src/format');
 
 t.test('formatFilesCoverageDataToHTMLTable', async () => {
   const actual = formatFilesCoverageDataToHTMLTable(
-    JSON.parse(readFile('sample-coverage-summary-output.json')).files_coverage_data,
+    JSON.parse(readFile('sample-coverage-summary-output.json')).other.files_coverage_data,
   );
 
   const expected = readFile('formatted-table.html').trim();

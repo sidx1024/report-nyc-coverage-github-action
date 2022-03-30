@@ -41,6 +41,30 @@ outputs:
     description: 'Total statements coverage percent (XX.XX) without percent and level indicator'
   total_functions_coverage_percent_raw:
     description: 'Total functions coverage percent (XX.XX) without percent and level indicator'
+  base_total_lines_coverage_percent:
+    description: 'Base total lines coverage percent (XX.XX%) with level indicator'
+  base_total_branches_coverage_percent:
+    description: 'Base total branches coverage percent (XX.XX%) with level indicator'
+  base_total_statements_coverage_percent:
+    description: 'Base total statements coverage percent (XX.XX%) with level indicator'
+  base_total_functions_coverage_percent:
+    description: 'Base total functions coverage percent (XX.XX%) with level indicator'
+  total_lines_coverage_percent_diff:
+    description: 'Total lines coverage percent diff (+XX.XX%)'
+  total_statements_coverage_percent_diff:
+    description: 'Total branches coverage percent diff (+XX.XX%)'
+  total_functions_coverage_percent_diff:
+    description: 'Total statements coverage percent diff (+XX.XX%)'
+  total_branches_coverage_percent_diff:
+    description: 'Total functions coverage percent diff (+XX.XX%)'
+  total_lines_coverage_percent_diff_raw:
+    description: 'Total lines coverage percent diff (-XX.XX) without percent sign'
+  total_statements_coverage_percent_diff_raw:
+    description: 'Total branches coverage percent diff (-XX.XX) without percent sign'
+  total_functions_coverage_percent_diff_raw:
+    description: 'Total statements coverage percent diff (-XX.XX) without percent sign'
+  total_branches_coverage_percent_diff_raw:
+    description: 'Total functions coverage percent diff (-XX.XX) without percent sign'
   files_coverage_table:
     description: 'HTML table content containing the file path and corresponding coverage percent for all files'
   changed_files_coverage_table:
@@ -53,6 +77,14 @@ outputs:
     description: 'Last commit SHA in shorter format (6ef01b)'
   commit_link:
     description: 'Relative link for the last commit'
+  base_commit_sha:
+    description: 'Base commit SHA'
+  base_short_commit_sha:
+    description: 'Base commit SHA in shorter format (bca317)'
+  base_commit_link:
+    description: 'Relative link for the base commit'
+  base_ref:
+    description: 'Base branch name'
 runs:
   using: 'node16'
   main: 'dist/index.js'
