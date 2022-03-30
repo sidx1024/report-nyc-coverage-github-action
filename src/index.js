@@ -86,11 +86,9 @@ async function run() {
     [ActionOutput.commit_link]: `${github.context.payload.pull_request.number}/commits/${commitSHA}`,
     [ActionOutput.base_commit_sha]: baseCommitSHA,
     [ActionOutput.base_short_commit_sha]: baseCommitSHA.substr(0, 7),
-    [ActionOutput.base_commit_link]: `../${github.context.payload.pull_request.number}/commit/${baseCommitSHA}`,
-    [ActionOutput.base_ref]: `../${github.context.payload.pull_request.base.ref}/commit/${baseCommitSHA}`,
+    [ActionOutput.base_commit_link]: `../commit/${baseCommitSHA}`,
+    [ActionOutput.base_ref]: `${github.context.payload.pull_request.base.ref}`,
   };
-
-  console.log('pull_request', github.context.payload.pull_request);
 
   const commentTemplateMDPath = path.resolve(core.getInput(ActionInput.comment_template_file));
   const commentTemplate = fs.readFileSync(commentTemplateMDPath, { encoding: 'utf-8' });
