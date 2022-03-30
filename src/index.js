@@ -90,6 +90,8 @@ async function run() {
     [ActionOutput.base_ref]: `../${github.context.payload.pull_request.base.ref}/commit/${baseCommitSHA}`,
   };
 
+  console.log('pull_request', github.context.payload.pull_request);
+
   const commentTemplateMDPath = path.resolve(core.getInput(ActionInput.comment_template_file));
   const commentTemplate = fs.readFileSync(commentTemplateMDPath, { encoding: 'utf-8' });
   const commentMark = `<!-- ${DEFAULT_COMMENT_MARKER} -->`;
