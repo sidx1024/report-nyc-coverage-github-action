@@ -106,18 +106,16 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a>
 
 <table>
   <thead>
-    <tr>
-      <th>Type</th>
-      {#if has_base_data}
-        <th>Base</th>
-      {/if}
-      <th>This PR</th>
-    </tr>
+    <th>Type</th>
+    {#if has_base_data}
+      <th>Base</th>
+    {/if}
+    <th>This PR</th>
   </thead>
   <tbody>
     {#each summary_list as {type, percent}}
       <tr>
-        <td>{type}</td>
+<td>{type}</td>
         {#if has_base_data}
           <td>
             {#if Number.isFinite(percent.base)}
@@ -125,9 +123,9 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a>
             {:else}
               -
             {/if}
-          </td>
+</td>
         {/if}
-        <td>
+<td>
           {#if Number.isFinite(percent.total)}
             <img src="{getCoverageLevelImage(percent.total)}" alt="">&nbsp;{percent.total}%
             {#if has_base_data}
@@ -136,7 +134,7 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a>
           {:else}
             -
           {/if}
-        </td>
+</td>
       </tr>
     {/each}
   </tbody>
@@ -146,13 +144,11 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a>
   <summary>Details (changed files):</summary>
   <table>
     <thead>
-      <tr>
-        <th>File</th>
-        <th>Statements</th>
-        <th>Branches</th>
-        <th>Functions</th>
-        <th>Lines</th>
-      </tr>
+      <th>File</th>
+      <th>Statements</th>
+      <th>Branches</th>
+      <th>Functions</th>
+      <th>Lines</th>
     </thead>
     <tbody>
       {#each changed_files_coverage_data as [file, data]}
@@ -163,17 +159,17 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a>
           data.lines.pct
         ]}
         <tr>
-          <td>
+<td>
             <a href="{getFilePrefix()}{file}">{file}</a>
-          </td>
+</td>
           {#each percents as percent}
-            <td>
+<td>
               {#if Number.isFinite(percent)}
                 <img src="{getCoverageLevelImage(percent)}" alt="">&nbsp;{percent}%
               {:else}
                 -
               {/if}
-            </td>
+</td>
           {/each}
         </tr>
       {/each}
