@@ -9940,10 +9940,10 @@ module.exports = eval("require")("encoding");
 
 /***/ }),
 
-/***/ 9726:
+/***/ 7037:
 /***/ ((module) => {
 
-module.exports = eval("require")("svelte-to-html/types/compiler");
+module.exports = eval("require")("svelte-to-html/compiler");
 
 
 /***/ }),
@@ -10153,7 +10153,7 @@ const {
 const { replaceTokens } = __nccwpck_require__(1608);
 const { parseCoverageSummaryJSON } = __nccwpck_require__(3248);
 const { formatFilesCoverageDataToHTMLTable } = __nccwpck_require__(5945);
-const { compile } = __nccwpck_require__(9726);
+const { compile } = __nccwpck_require__(7037);
 
 async function run() {
   if (github.context.eventName !== 'pull_request') {
