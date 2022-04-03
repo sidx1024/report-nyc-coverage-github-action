@@ -43,7 +43,7 @@
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
     "prettier": "^2.6.0",
-    "tap": "^16.0.0"
+    "tap": "^16.0.1"
   },
   "lint-staged": {
     "*.{js,md,json,yml}": "prettier --write"

@@ -52,3 +52,4 @@ jobs:
         with:
           coverage_output_directory: 'artifacts/'
           base_coverage_output_directory: 'base-artifacts/'
+          comment_template_file: 'comment-template.svelte'

@@ -90,10 +90,34 @@ async function run() {
     [ActionOutput.base_ref]: `${github.context.payload.pull_request.base.ref}`,
   };
 
-  const commentTemplateMDPath = path.resolve(core.getInput(ActionInput.comment_template_file));
-  const commentTemplate = fs.readFileSync(commentTemplateMDPath, { encoding: 'utf-8' });
+  const commentTemplateFilePath = path.resolve(core.getInput(ActionInput.comment_template_file));
   const commentMark = `<!-- ${DEFAULT_COMMENT_MARKER} -->`;
-  const commentBody = replaceTokens(commentTemplate, outputs) + '\n' + commentMark + '\n';
+
+  let commentBody;
+  if (commentTemplateFilePath.endsWith('.svelte')) {
+    const props = Object.assign({}, outputs, {
+      changed_files_coverage_data: other[InternalToken.changed_files_coverage_data],
+    });
+    const propsFilename = `tmp-report-nyc-coverage-${commitSHA}-props.json`;
+    const outputFilename = `tmp-report-nyc-coverage-${commitSHA}-output.html`;
+    fs.writeFileSync(propsFilename, JSON.stringify(props), 'utf-8');
+    const svelteToHTMLCommand = await exec.getExecOutput(
+      `npx svelte-to-html ${commentTemplateFilePath} ${outputFilename} ${propsFilename}`,
+      [],
+      {
+        ignoreReturnCode: true,
+      },
+    );
+    if (svelteToHTMLCommand.exitCode === 0) {
+      commentBody = fs.readFileSync(outputFilename, 'utf-8');
+    } else {
+      console.error('Svelte to HTML transformation failed.', svelteToHTMLCommand);
+    }
+  } else {
+    const commentTemplate = fs.readFileSync(commentTemplateFilePath, { encoding: 'utf-8' });
+    commentBody = replaceTokens(commentTemplate, outputs);
+  }
+  commentBody += '\n' + commentMark + '\n';
 
   const commentMode = core.getInput(ActionInput.comment_mode);
 
