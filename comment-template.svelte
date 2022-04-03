@@ -106,11 +106,13 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a>
 
 <table>
   <thead>
-    <tr><th>Type</th></tr>
-    {#if has_base_data}
-      <tr><th>Base</th></tr>
-    {/if}
-    <tr><th>This PR</th></tr>
+    <tr>
+      <th>Type</th>
+      {#if has_base_data}
+        <th>Base</th>
+      {/if}
+      <th>This PR</th>
+    </tr>
   </thead>
   <tbody>
     {#each summary_list as {type, percent}}
@@ -144,11 +146,13 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a>
   <summary>Details (changed files):</summary>
   <table>
     <thead>
-      <tr><th>File</th></tr>
-      <tr><th>Statements</th></tr>
-      <tr><th>Branches</th></tr>
-      <tr><th>Functions</th></tr>
-      <tr><th>Lines</th></tr>
+      <tr>
+        <th>File</th>
+        <th>Statements</th>
+        <th>Branches</th>
+        <th>Functions</th>
+        <th>Lines</th>
+      </tr>
     </thead>
     <tbody>
       {#each changed_files_coverage_data as [file, data]}
