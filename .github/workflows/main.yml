@@ -91,3 +91,4 @@ jobs:
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           body: ${{ steps.read_file.outputs.contents }}
+          edit-mode: replace
