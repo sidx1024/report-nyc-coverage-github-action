@@ -54,7 +54,8 @@ jobs:
           coverage_output_directory: 'artifacts/test-coverage-output/'
           base_coverage_output_directory: ${{steps.check_files.outputs.files_exists == 'true' && 'base-artifacts/' || ''}}
 
-      - uses: DamianReeves/write-file-action
+      - name: Write props to file
+        uses: DamianReeves/write-file-action@v1.0
         with:
           path: props.json
           contents: '{"json":${{toJSON(steps.report.outputs)}}}'
