@@ -21,6 +21,39 @@
   export let changed_files_coverage_data;
 
   const has_base_data = base_total_branches_coverage_percent_raw !== '?';
+  const summary_list = [
+    {
+      type: 'Total Statements Coverage',
+      percent: {
+        total: total_statements_coverage_percent_raw,
+        base: has_base_data ? base_total_statements_coverage_percent_raw: null,
+        diff: has_base_data ? formatPercentDiff(total_statements_coverage_percent_raw - base_total_statements_coverage_percent_raw) : null,
+      }
+    },
+    {
+      type: 'Total Branches Coverage',
+      percent: {
+        total: total_branches_coverage_percent_raw,
+        base: has_base_data ? base_total_branches_coverage_percent_raw: null,
+        diff: has_base_data ? formatPercentDiff(total_branches_coverage_percent_raw - base_total_branches_coverage_percent_raw) : null,
+      }
+    },
+    {
+      type: 'Total Functions Coverage',
+      percent: {
+        total: total_functions_coverage_percent_raw,
+        base: has_base_data ? base_total_functions_coverage_percent_raw: null,
+        diff: has_base_data ? (total_functions_coverage_percent_raw - base_total_functions_coverage_percent_raw) : null,
+      }
+    },
+    {
+      type: 'Total Lines Coverage',
+      percent: {
+        total: total_lines_coverage_percent_raw,
+        base: has_base_data ? base_total_lines_coverage_percent_raw: null,
+        diff: has_base_data ? (total_lines_coverage_percent_raw - base_total_lines_coverage_percent_raw) : null,
+      }
+    }];
 
   const LETTER_LABEL = {
     S: 'Statements',
@@ -80,40 +113,7 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a>
     <tr><th>This PR</th></tr>
   </thead>
   <tbody>
-    {@const list = [
-      {
-        type: 'Total Statements Coverage',
-        percent: {
-          total: total_statements_coverage_percent_raw,
-          base: has_base_data ? base_total_statements_coverage_percent_raw: null,
-          diff: has_base_data ? formatPercentDiff(total_statements_coverage_percent_raw - base_total_statements_coverage_percent_raw) : null,
-        }
-      },
-      {
-        type: 'Total Branches Coverage',
-        percent: {
-          total: total_branches_coverage_percent_raw,
-          base: has_base_data ? base_total_branches_coverage_percent_raw: null,
-          diff: has_base_data ? formatPercentDiff(total_branches_coverage_percent_raw - base_total_branches_coverage_percent_raw) : null,
-        }
-      },
-      {
-        type: 'Total Functions Coverage',
-        percent: {
-          total: total_functions_coverage_percent_raw,
-          base: has_base_data ? base_total_functions_coverage_percent_raw: null,
-          diff: has_base_data ? (total_functions_coverage_percent_raw - base_total_functions_coverage_percent_raw) : null,
-        }
-      },
-      {
-        type: 'Total Lines Coverage',
-        percent: {
-          total: total_lines_coverage_percent_raw,
-          base: has_base_data ? base_total_lines_coverage_percent_raw: null,
-          diff: has_base_data ? (total_lines_coverage_percent_raw - base_total_lines_coverage_percent_raw) : null,
-        }
-      }]}
-    {#each list as {type, percent}}
+    {#each summary_list as {type, percent}}
       <tr>
         <td>{type}</td>
         {#if has_base_data}
@@ -152,16 +152,16 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a>
     </thead>
     <tbody>
       {#each changed_files_coverage_data as [file, data]}
+        {@const percents = [
+          data.statements.pct,
+          data.branches.pct,
+          data.functions.pct,
+          data.lines.pct
+        ]}
         <tr>
           <td>
             <a href="{getFilePrefix()}{file}">{file}</a>
           </td>
-          {@const percents = [
-            data.statements.pct,
-            data.branches.pct,
-            data.functions.pct,
-            data.lines.pct
-          ]}
           {#each percents as percent}
             <td>
               {#if Number.isFinite(percent)}
