@@ -27,7 +27,7 @@
       percent: {
         total: total_statements_coverage_percent_raw,
         base: has_base_data ? base_total_statements_coverage_percent_raw: null,
-        diff: has_base_data ? formatPercentDiff(total_statements_coverage_percent_raw - base_total_statements_coverage_percent_raw) : null,
+        diff: has_base_data ? (total_statements_coverage_percent_raw - base_total_statements_coverage_percent_raw) : null,
       }
     },
     {
@@ -35,7 +35,7 @@
       percent: {
         total: total_branches_coverage_percent_raw,
         base: has_base_data ? base_total_branches_coverage_percent_raw: null,
-        diff: has_base_data ? formatPercentDiff(total_branches_coverage_percent_raw - base_total_branches_coverage_percent_raw) : null,
+        diff: has_base_data ? (total_branches_coverage_percent_raw - base_total_branches_coverage_percent_raw) : null,
       }
     },
     {
