@@ -99,15 +99,18 @@ async function run() {
       changed_files_coverage_data: other[InternalToken.changed_files_coverage_data],
     });
     const propsFilename = `tmp-report-nyc-coverage-${commitSHA}-props.json`;
+    const outputFilename = `tmp-report-nyc-coverage-${commitSHA}-output.html`;
     fs.writeFileSync(propsFilename, JSON.stringify(props), 'utf-8');
     const svelteToHTMLCommand = await exec.getExecOutput(
-      `npx svelte-to-html ${commentTemplateFilePath} ${propsFilename}`,
+      `npx svelte-to-html ${commentTemplateFilePath} ${outputFilename} ${propsFilename}`,
       [],
       {
         ignoreReturnCode: true,
       },
     );
-    if (svelteToHTMLCommand.exitCode !== 0) {
+    if (svelteToHTMLCommand.exitCode === 0) {
+      commentBody = fs.readFileSync(outputFilename, 'utf-8');
+    } else {
       console.error('Svelte to HTML transformation failed.', svelteToHTMLCommand);
     }
   } else {
