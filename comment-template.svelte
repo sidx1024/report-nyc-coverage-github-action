@@ -101,8 +101,8 @@
 
 <h2>Coverage Report</h2>
 
-Commit: <a href="{commit_link}">{short_commit_sha}</a>
-Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a>
+Commit: <a href="{commit_link}">{short_commit_sha}</a><br>
+Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a><br><br>
 
 <table>
   <thead>
@@ -141,7 +141,7 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a>
 </table>
 
 <details>
-  <summary>Details (changed files):</summary>
+  <summary>Details (changed files):</summary><br>
   <table>
     <thead>
       <th>File</th>
