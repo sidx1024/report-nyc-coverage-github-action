@@ -53,42 +53,4 @@ jobs:
         with:
           coverage_output_directory: 'artifacts/test-coverage-output/'
           base_coverage_output_directory: ${{steps.check_files.outputs.files_exists == 'true' && 'base-artifacts/' || ''}}
-
-      - name: Write props to file
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: props.json
-          contents: '{"json":${{toJSON(steps.report.outputs)}}}'
-          write-mode: overwrite
-
-      - name: Generate comment content
-        run: npx svelte-to-html comment-template.svelte comment.html props.json
-
-      - name: Read file contents
-        id: read_file
-        uses: andstor/file-reader-action@v1
-        with:
-          path: 'comment.html'
-
-      - name: Find Comment
-        uses: peter-evans/find-comment@v2
-        id: fc
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: '<!-- report-nyc-coverage-github-action-comment-mark -->'
-
-      - name: Create comment
-        if: steps.fc.outputs.comment-id == ''
-        uses: peter-evans/create-or-update-comment@v2
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: ${{ steps.read_file.outputs.contents }}
-
-      - name: Update comment
-        if: steps.fc.outputs.comment-id != ''
-        uses: peter-evans/create-or-update-comment@v2
-        with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          body: ${{ steps.read_file.outputs.contents }}
-          edit-mode: replace
+          comment_template_file: 'comment-template.svelte'

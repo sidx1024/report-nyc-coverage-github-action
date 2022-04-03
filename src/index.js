@@ -18,6 +18,7 @@ const {
 const { replaceTokens } = require('./utils');
 const { parseCoverageSummaryJSON } = require('./parse');
 const { formatFilesCoverageDataToHTMLTable } = require('./format');
+const { compile } = require('svelte-to-html/types/compiler');
 
 async function run() {
   if (github.context.eventName !== 'pull_request') {
@@ -90,10 +91,22 @@ async function run() {
     [ActionOutput.base_ref]: `${github.context.payload.pull_request.base.ref}`,
   };
 
-  const commentTemplateMDPath = path.resolve(core.getInput(ActionInput.comment_template_file));
-  const commentTemplate = fs.readFileSync(commentTemplateMDPath, { encoding: 'utf-8' });
+  const commentTemplateFilePath = path.resolve(core.getInput(ActionInput.comment_template_file));
   const commentMark = `<!-- ${DEFAULT_COMMENT_MARKER} -->`;
-  const commentBody = replaceTokens(commentTemplate, outputs) + '\n' + commentMark + '\n';
+
+  let commentBody;
+  if (commentTemplateFilePath.endsWith('.svelte')) {
+    commentBody = await compile(
+      commentTemplateFilePath,
+      Object.assign({}, outputs, {
+        changed_files_coverage_data: other[InternalToken.changed_files_coverage_data],
+      }),
+    );
+  } else {
+    const commentTemplate = fs.readFileSync(commentTemplateFilePath, { encoding: 'utf-8' });
+    commentBody = replaceTokens(commentTemplate, outputs);
+  }
+  commentBody += '\n' + commentMark + '\n';
 
   const commentMode = core.getInput(ActionInput.comment_mode);
 
