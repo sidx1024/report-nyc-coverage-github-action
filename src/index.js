@@ -18,7 +18,6 @@ const {
 const { replaceTokens } = require('./utils');
 const { parseCoverageSummaryJSON } = require('./parse');
 const { formatFilesCoverageDataToHTMLTable } = require('./format');
-const { compile } = require('svelte-to-html/src/compiler');
 
 async function run() {
   if (github.context.eventName !== 'pull_request') {
