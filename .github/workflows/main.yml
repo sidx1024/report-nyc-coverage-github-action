@@ -54,8 +54,14 @@ jobs:
           coverage_output_directory: 'artifacts/test-coverage-output/'
           base_coverage_output_directory: ${{steps.check_files.outputs.files_exists == 'true' && 'base-artifacts/' || ''}}
 
+      - uses: DamianReeves/write-file-action
+        with:
+          path: props.json
+          contents: '{"json":${{toJSON(steps.report.outputs)}}}'
+          write-mode: overwrite
+
       - name: Generate comment content
-        run: npx svelte-to-html comment-template.svelte comment.html '{"json":${{toJSON(steps.report.outputs)}}}'
+        run: npx svelte-to-html comment-template.svelte comment.html props.json
 
       - name: Read file contents
         id: read_file
