@@ -43,7 +43,6 @@
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
     "prettier": "^2.6.0",
-    "svelte-to-html": "^1.0.5",
     "tap": "^16.0.1"
   },
   "lint-staged": {

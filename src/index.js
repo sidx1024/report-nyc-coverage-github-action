@@ -18,7 +18,7 @@ const {
 const { replaceTokens } = require('./utils');
 const { parseCoverageSummaryJSON } = require('./parse');
 const { formatFilesCoverageDataToHTMLTable } = require('./format');
-const { compile } = require('svelte-to-html/compiler');
+const { compile } = require('svelte-to-html/src/compiler');
 
 async function run() {
   if (github.context.eventName !== 'pull_request') {
@@ -96,12 +96,21 @@ async function run() {
 
   let commentBody;
   if (commentTemplateFilePath.endsWith('.svelte')) {
-    commentBody = await compile(
-      commentTemplateFilePath,
-      Object.assign({}, outputs, {
-        changed_files_coverage_data: other[InternalToken.changed_files_coverage_data],
-      }),
+    const props = Object.assign({}, outputs, {
+      changed_files_coverage_data: other[InternalToken.changed_files_coverage_data],
+    });
+    const propsFilename = `tmp-report-nyc-coverage-${commitSHA}-props.json`;
+    fs.writeFileSync(propsFilename, JSON.stringify(props), 'utf-8');
+    const svelteToHTMLCommand = await exec.getExecOutput(
+      `npx svelte-to-html ${commentTemplateFilePath} ${propsFilename}`,
+      [],
+      {
+        ignoreReturnCode: true,
+      },
     );
+    if (svelteToHTMLCommand.exitCode !== 0) {
+      console.error('Svelte to HTML transformation failed.', svelteToHTMLCommand);
+    }
   } else {
     const commentTemplate = fs.readFileSync(commentTemplateFilePath, { encoding: 'utf-8' });
     commentBody = replaceTokens(commentTemplate, outputs);
