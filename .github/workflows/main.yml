@@ -55,7 +55,7 @@ jobs:
           base_coverage_output_directory: ${{steps.check_files.outputs.files_exists == 'true' && 'base-artifacts/' || ''}}
 
       - name: Generate comment content
-        run: npx svelte-to-html comment-template.svelte comment.html '{"json":"${{toJSON(steps.report.outputs)}}"}'
+        run: npx svelte-to-html comment-template.svelte comment.html '{"json":${{toJSON(steps.report.outputs)}}}'
 
       - name: Read file contents
         id: read_file
