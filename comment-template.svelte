@@ -106,18 +106,18 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a>
 
 <table>
   <thead>
-    <th>Type</th>
+<th>Type</th>
     {#if has_base_data}
-      <th>Base</th>
+<th>Base</th>
     {/if}
-    <th>This PR</th>
+<th>This PR</th>
   </thead>
   <tbody>
     {#each summary_list as {type, percent}}
       <tr>
 <td>{type}</td>
         {#if has_base_data}
-          <td>
+<td>
             {#if Number.isFinite(percent.base)}
               <img src="{getCoverageLevelImage(percent.base)}" alt="">&nbsp;{percent.base}%
             {:else}
@@ -144,11 +144,11 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a>
   <summary>Details (changed files):</summary>
   <table>
     <thead>
-      <th>File</th>
-      <th>Statements</th>
-      <th>Branches</th>
-      <th>Functions</th>
-      <th>Lines</th>
+<th>File</th>
+<th>Statements</th>
+<th>Branches</th>
+<th>Functions</th>
+<th>Lines</th>
     </thead>
     <tbody>
       {#each changed_files_coverage_data as [file, data]}
