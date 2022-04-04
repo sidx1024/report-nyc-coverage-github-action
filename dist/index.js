@@ -9571,8 +9571,8 @@ function wrappy (fn, cb) {
 
 module.exports = {
   ActionInput: {
-    coverage_output_directory: 'coverage_output_directory',
-    base_coverage_output_directory: 'base_coverage_output_directory',
+    coverage_file: 'coverage_file',
+    base_coverage_file: 'base_coverage_file',
     sources_base_path: 'sources_base_path',
     comment_template_file: 'comment_template_file',
     comment_mode: 'comment_mode',
@@ -9624,7 +9624,6 @@ module.exports = {
     files_coverage_data: 'files_coverage_data',
     changed_files_coverage_data: 'changed_files_coverage_data',
   },
-  DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME: 'coverage-summary.json',
   DEFAULT_COMMENT_MARKER: 'report-nyc-coverage-github-action-comment-mark',
 };
 
@@ -10135,13 +10134,7 @@ const github = __nccwpck_require__(5438);
 const exec = __nccwpck_require__(1514);
 
 // Module
-const {
-  ActionOutput,
-  InternalToken,
-  ActionInput,
-  DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
-  DEFAULT_COMMENT_MARKER,
-} = __nccwpck_require__(4438);
+const { ActionOutput, InternalToken, ActionInput, DEFAULT_COMMENT_MARKER } = __nccwpck_require__(4438);
 const { replaceTokens } = __nccwpck_require__(1608);
 const { parseCoverageSummaryJSON } = __nccwpck_require__(3248);
 const { formatFilesCoverageDataToHTMLTable } = __nccwpck_require__(5945);
@@ -10157,22 +10150,16 @@ async function run() {
     return;
   }
 
-  const coverageOutputDirectory = core.getInput(ActionInput.coverage_output_directory);
-  const coverageSummaryJSONPath = path.resolve(
-    coverageOutputDirectory,
-    DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
-  );
+  const coverageFile = core.getInput(ActionInput.coverage_file);
+  const coverageSummaryJSONPath = path.resolve(coverageFile);
   const coverageSummaryJSON = JSON.parse(
     fs.readFileSync(coverageSummaryJSONPath, { encoding: 'utf-8' }),
   );
 
   let baseCoverageSummaryJSON;
-  const baseCoverageOutputDirectory = core.getInput(ActionInput.base_coverage_output_directory);
-  if (baseCoverageOutputDirectory) {
-    const baseCoverageSummaryJSONPath = path.resolve(
-      baseCoverageOutputDirectory,
-      DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
-    );
+  const baseCoverageFile = core.getInput(ActionInput.base_coverage_file);
+  if (baseCoverageFile) {
+    const baseCoverageSummaryJSONPath = path.resolve(baseCoverageFile);
     try {
       baseCoverageSummaryJSON = JSON.parse(
         fs.readFileSync(baseCoverageSummaryJSONPath, { encoding: 'utf-8' }),

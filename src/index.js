@@ -8,13 +8,7 @@ const github = require('@actions/github');
 const exec = require('@actions/exec');
 
 // Module
-const {
-  ActionOutput,
-  InternalToken,
-  ActionInput,
-  DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
-  DEFAULT_COMMENT_MARKER,
-} = require('./constants');
+const { ActionOutput, InternalToken, ActionInput, DEFAULT_COMMENT_MARKER } = require('./constants');
 const { replaceTokens } = require('./utils');
 const { parseCoverageSummaryJSON } = require('./parse');
 const { formatFilesCoverageDataToHTMLTable } = require('./format');
@@ -30,22 +24,16 @@ async function run() {
     return;
   }
 
-  const coverageOutputDirectory = core.getInput(ActionInput.coverage_output_directory);
-  const coverageSummaryJSONPath = path.resolve(
-    coverageOutputDirectory,
-    DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
-  );
+  const coverageFile = core.getInput(ActionInput.coverage_file);
+  const coverageSummaryJSONPath = path.resolve(coverageFile);
   const coverageSummaryJSON = JSON.parse(
     fs.readFileSync(coverageSummaryJSONPath, { encoding: 'utf-8' }),
   );
 
   let baseCoverageSummaryJSON;
-  const baseCoverageOutputDirectory = core.getInput(ActionInput.base_coverage_output_directory);
-  if (baseCoverageOutputDirectory) {
-    const baseCoverageSummaryJSONPath = path.resolve(
-      baseCoverageOutputDirectory,
-      DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME,
-    );
+  const baseCoverageFile = core.getInput(ActionInput.base_coverage_file);
+  if (baseCoverageFile) {
+    const baseCoverageSummaryJSONPath = path.resolve(baseCoverageFile);
     try {
       baseCoverageSummaryJSON = JSON.parse(
         fs.readFileSync(baseCoverageSummaryJSONPath, { encoding: 'utf-8' }),

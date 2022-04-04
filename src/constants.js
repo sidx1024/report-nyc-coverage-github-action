@@ -1,7 +1,7 @@
 module.exports = {
   ActionInput: {
-    coverage_output_directory: 'coverage_output_directory',
-    base_coverage_output_directory: 'base_coverage_output_directory',
+    coverage_file: 'coverage_file',
+    base_coverage_file: 'base_coverage_file',
     sources_base_path: 'sources_base_path',
     comment_template_file: 'comment_template_file',
     comment_mode: 'comment_mode',
@@ -53,7 +53,6 @@ module.exports = {
     files_coverage_data: 'files_coverage_data',
     changed_files_coverage_data: 'changed_files_coverage_data',
   },
-  DEFAULT_COVERAGE_SUMMARY_JSON_FILENAME: 'coverage-summary.json',
   DEFAULT_COMMENT_MARKER: 'report-nyc-coverage-github-action-comment-mark',
 };
 
