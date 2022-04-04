@@ -56,4 +56,4 @@ module.exports = {
   DEFAULT_COMMENT_MARKER: 'report-nyc-coverage-github-action-comment-mark',
 };
 
-// 2
+// 3
