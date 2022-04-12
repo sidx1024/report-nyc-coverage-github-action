@@ -45,7 +45,7 @@ jobs:
         continue-on-error: true
         with:
           workflow: ${{ github.event.pull_request.base.ref == 'main' && 'default-branch.yml' || 'main.yml' }}
-          run_id: ${{steps.get_run_id.run_id}}
+          run_id: ${{steps.get_run_id.outputs.run_id}}
           name: 'test-coverage-output'
           path: base-artifacts
           search_artifacts: 'test-coverage-output'
