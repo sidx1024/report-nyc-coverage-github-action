@@ -39,6 +39,8 @@ jobs:
               --json conclusion,headSha,status,databaseId \
               --jq ".[] | select( .conclusion == \"success\" and .headSha == \"${{github.event.pull_request.base.sha}}\") | .databaseId" \
           )"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
