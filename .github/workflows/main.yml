@@ -10,7 +10,7 @@ jobs:
         uses: jsdaniell/create-json@1.1.2
         with:
           name: 'out.json'
-          json: ${{ format('{{"sha":"{0}"}}', github.sha) }}
+          json: ${{ format('{{"sha":"{0}","base_ref":"{1}","head_ref":"{2}"}}', github.sha, github.base_ref, github.head_ref) }}
 
       - name: print
         run: |
