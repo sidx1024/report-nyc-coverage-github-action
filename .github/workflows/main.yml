@@ -5,6 +5,17 @@ jobs:
     runs-on: ubuntu-latest
     name: Test and report
     steps:
+      - name: create-json
+        id: create-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: 'out.json'
+          json: ${{ github }}
+
+      - name: print
+        run: |
+          cat out.json
+
       - name: Checkout
         uses: actions/checkout@v3
         with:
