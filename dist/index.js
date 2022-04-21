@@ -10288,10 +10288,15 @@ async function findCommentByBody(octokit, commentBodyIncludes) {
     issue_number: github.context.payload.pull_request.number,
   };
 
+  console.log(parameters);
+
+  let count = 0;
+
   for await (const { data: comments } of octokit.paginate.iterator(
     octokit.rest.issues.listComments,
     parameters,
   )) {
+    console.log('findCommentByBody', count++);
     const comment = comments.find((comment) => comment.body.includes(commentBodyIncludes));
     if (comment) return comment;
   }
@@ -10307,7 +10312,7 @@ run().catch((error) => {
   core.setFailed(error.stack || error.message);
 });
 
-// 1
+// 2
 
 })();
 
