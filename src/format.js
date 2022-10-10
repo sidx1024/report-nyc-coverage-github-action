@@ -75,9 +75,9 @@ function formatPercentDiff(percent) {
 
 function getCoverageLevelImage(percent) {
   // https://github.com/istanbuljs/istanbuljs/blob/c1559005b3bb318da01f505740adb0e782aaf14e/packages/istanbul-lib-report/lib/watermarks.js
-  if (percent >= 80) {
+  if (percent >= 95) {
     return COVERAGE_LEVEL_IMAGE.high;
-  } else if (percent >= 50) {
+  } else if (percent >= 80) {
     return COVERAGE_LEVEL_IMAGE.medium;
   } else {
     return COVERAGE_LEVEL_IMAGE.low;
