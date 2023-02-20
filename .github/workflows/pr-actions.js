@@ -1,6 +1,8 @@
 const core = require('@actions/core');
 const exec = require('@actions/exec');
 
+// Current
+
 const BASE_REF = github.context.payload.pull_request.base.ref;
 const HEAD_REF = github.context.payload.pull_request.head.ref
 
