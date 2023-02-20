@@ -4,6 +4,7 @@ on:
     types: [created]
 
 jobs:
+  # test 1
   on_comment:
     if: contains(github.event.comment.body, '/merge')
     name: On merge comment
