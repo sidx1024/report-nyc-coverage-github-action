@@ -130,7 +130,7 @@ async function run() {
   }
 
   Object.entries(outputs).forEach(([token, value]) => {
-    core.exportVariable(token, value);
+    core.setOutput(token, value);
   });
 }
 
