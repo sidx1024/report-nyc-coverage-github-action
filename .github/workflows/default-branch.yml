@@ -6,18 +6,15 @@ on:
       - main
 
 jobs:
-  hello_world_job:
+  test_and_upload_coverage:
     runs-on: ubuntu-latest
-    name: Test and report
+    name: Test and upload coverage
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.ref }}
           fetch-depth: 1000
-
-      - name: Fetch base
-        run: git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1000
 
       - name: Run tests
         run: |
