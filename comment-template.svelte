@@ -26,34 +26,43 @@
       type: 'Total Statements Coverage',
       percent: {
         total: total_statements_coverage_percent_raw,
-        base: has_base_data ? base_total_statements_coverage_percent_raw: null,
-        diff: has_base_data ? (total_statements_coverage_percent_raw - base_total_statements_coverage_percent_raw) : null,
-      }
+        base: has_base_data ? base_total_statements_coverage_percent_raw : null,
+        diff: has_base_data
+          ? total_statements_coverage_percent_raw - base_total_statements_coverage_percent_raw
+          : null,
+      },
     },
     {
       type: 'Total Branches Coverage',
       percent: {
         total: total_branches_coverage_percent_raw,
-        base: has_base_data ? base_total_branches_coverage_percent_raw: null,
-        diff: has_base_data ? (total_branches_coverage_percent_raw - base_total_branches_coverage_percent_raw) : null,
-      }
+        base: has_base_data ? base_total_branches_coverage_percent_raw : null,
+        diff: has_base_data
+          ? total_branches_coverage_percent_raw - base_total_branches_coverage_percent_raw
+          : null,
+      },
     },
     {
       type: 'Total Functions Coverage',
       percent: {
         total: total_functions_coverage_percent_raw,
-        base: has_base_data ? base_total_functions_coverage_percent_raw: null,
-        diff: has_base_data ? (total_functions_coverage_percent_raw - base_total_functions_coverage_percent_raw) : null,
-      }
+        base: has_base_data ? base_total_functions_coverage_percent_raw : null,
+        diff: has_base_data
+          ? total_functions_coverage_percent_raw - base_total_functions_coverage_percent_raw
+          : null,
+      },
     },
     {
       type: 'Total Lines Coverage',
       percent: {
         total: total_lines_coverage_percent_raw,
-        base: has_base_data ? base_total_lines_coverage_percent_raw: null,
-        diff: has_base_data ? (total_lines_coverage_percent_raw - base_total_lines_coverage_percent_raw) : null,
-      }
-    }];
+        base: has_base_data ? base_total_lines_coverage_percent_raw : null,
+        diff: has_base_data
+          ? total_lines_coverage_percent_raw - base_total_lines_coverage_percent_raw
+          : null,
+      },
+    },
+  ];
 
   const LETTER_LABEL = {
     S: 'Statements',
@@ -101,25 +110,29 @@
 
 <h2>Coverage Report</h2>
 
-Commit: <a href="{commit_link}">{short_commit_sha}</a><br>
-Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a><br><br>
+Commit:<a href={commit_link}>{short_commit_sha}</a><br />
+Base: <a href={base_commit_link}>{base_ref}@{base_short_commit_sha}</a><br /><br />
+
+```json
+{JSON.stringify($$props, null, 2)}
+```
 
 <table>
   <thead>
     <th>Type</th>
-      {#if has_base_data}
-        <th>Base</th>
-      {/if}
+    {#if has_base_data}
+      <th>Base</th>
+    {/if}
     <th>This PR</th>
   </thead>
   <tbody>
-    {#each summary_list as {type, percent}}
+    {#each summary_list as { type, percent }}
       <tr>
         <td>{type}</td>
         {#if has_base_data}
           <td>
             {#if Number.isFinite(percent.base)}
-              <img src="{getCoverageLevelImage(percent.base)}" alt="">&nbsp;{percent.base}%
+              <img src={getCoverageLevelImage(percent.base)} alt="" />&nbsp;{percent.base}%
             {:else}
               -
             {/if}
@@ -127,7 +140,7 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a><br><br
         {/if}
         <td>
           {#if Number.isFinite(percent.total)}
-            <img src="{getCoverageLevelImage(percent.total)}" alt="">&nbsp;{percent.total}%
+            <img src={getCoverageLevelImage(percent.total)} alt="" />&nbsp;{percent.total}%
             {#if has_base_data}
               &nbsp;({formatPercentDiff(percent.diff)})
             {/if}
@@ -141,7 +154,7 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a><br><br
 </table>
 
 <details>
-  <summary>Details (changed files):</summary><br>
+  <summary>Details (changed files):</summary><br />
   <table>
     <thead>
       <th>File</th>
@@ -156,7 +169,7 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a><br><br
           data.statements.pct,
           data.branches.pct,
           data.functions.pct,
-          data.lines.pct
+          data.lines.pct,
         ]}
         <tr>
           <td>
@@ -165,7 +178,7 @@ Base: <a href="{base_commit_link}">{base_ref}@{base_short_commit_sha}</a><br><br
           {#each percents as percent}
             <td>
               {#if Number.isFinite(percent)}
-                <img src="{getCoverageLevelImage(percent)}" alt="">&nbsp;{percent}%
+                <img src={getCoverageLevelImage(percent)} alt="" />&nbsp;{percent}%
               {:else}
                 -
               {/if}

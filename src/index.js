@@ -78,6 +78,8 @@ async function run() {
     [ActionOutput.base_ref]: `${github.context.payload.pull_request.base.ref}`,
   };
 
+  console.log('outputs', outputs);
+
   const commentTemplateFilePath = path.resolve(core.getInput(ActionInput.comment_template_file));
   const commentMark = `<!-- ${DEFAULT_COMMENT_MARKER} -->`;
 
