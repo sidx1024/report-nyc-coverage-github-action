@@ -14,6 +14,9 @@ GitHub Action that posts the report in a comment on a GitHub Pull Request from c
 [See sample comment](https://github.com/sidx1024/report-nyc-coverage-github-action/pull/10#issuecomment-1074885726)
 <img src="docs/sample-report.png" alt="Sample comment image">
 
+## Setup
+Please refer to the folder [.github/workflows](https://github.com/sidx1024/report-nyc-coverage-github-action/tree/main/.github/workflows) to see how this action is used in this repo itself. Use it as a reference for setting it up for your repo.
+
 ## Typical Usage
 
 ```yaml
