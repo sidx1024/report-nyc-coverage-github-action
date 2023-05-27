@@ -113,10 +113,6 @@
 Commit:<a href={commit_link}>{short_commit_sha}</a><br />
 Base: <a href={base_commit_link}>{base_ref}@{base_short_commit_sha}</a><br /><br />
 
-```json
-{JSON.stringify($$props, null, 2)}
-```
-
 <table>
   <thead>
     <th>Type</th>
