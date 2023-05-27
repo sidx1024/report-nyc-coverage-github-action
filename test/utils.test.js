@@ -8,10 +8,7 @@ t.test('replaceTokens', async () => {
     '1, 2, and 3',
   );
 
-  // t.throws(
-  //   function throwsErrorForMissingToken() {
-  //     replaceTokens('{{one}}, {{four}}, and {{five}}', { one: 1, two: 2, three: 3 });
-  //   },
-  //   new Error('Invalid or missing tokens: four,five')
-  // );
+  t.throws(function throwsErrorForMissingToken() {
+    replaceTokens('{{one}}, {{four}}, and {{five}}', { one: 1, two: 2, three: 3 });
+  }, new Error('Invalid or missing tokens: four,five'));
 });
