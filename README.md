@@ -80,7 +80,7 @@ jobs:
 
     # The unique marker used to leave the PR comment. Update to run multiple NYC reports in a single PR
     # Default: report-nyc-coverage-github-action-comment-mark
-    comment_mode: ""
+    comment_marker: ""
 
     # An alternative GitHub token, other than the default provided by GitHub Actions
     # runner. Optional.
