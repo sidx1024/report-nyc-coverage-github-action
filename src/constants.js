@@ -5,6 +5,7 @@ module.exports = {
     sources_base_path: 'sources_base_path',
     comment_template_file: 'comment_template_file',
     comment_mode: 'comment_mode',
+    comment_mark: 'comment_mark',
     files_coverage_table_output_type_order: 'files_coverage_table_output_type_order',
   },
   ActionOutput: {
@@ -53,7 +54,7 @@ module.exports = {
     files_coverage_data: 'files_coverage_data',
     changed_files_coverage_data: 'changed_files_coverage_data',
   },
-  DEFAULT_COMMENT_MARKER: 'report-nyc-coverage-github-action-comment-mark',
+  // DEFAULT_COMMENT_MARKER: 'report-nyc-coverage-github-action-comment-mark',
 };
 
 // 2

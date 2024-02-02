@@ -556,8 +556,8 @@ class OidcClient {
             const res = yield httpclient
                 .getJson(id_token_url)
                 .catch(error => {
-                throw new Error(`Failed to get ID Token. \n 
-        Error Code : ${error.statusCode}\n 
+                throw new Error(`Failed to get ID Token. \n
+        Error Code : ${error.statusCode}\n
         Error Message: ${error.result.message}`);
             });
             const id_token = (_a = res.result) === null || _a === void 0 ? void 0 : _a.value;
@@ -10725,6 +10725,7 @@ module.exports = {
     sources_base_path: 'sources_base_path',
     comment_template_file: 'comment_template_file',
     comment_mode: 'comment_mode',
+    comment_marker: 'comment_marker',
     files_coverage_table_output_type_order: 'files_coverage_table_output_type_order',
   },
   ActionOutput: {
@@ -10773,7 +10774,7 @@ module.exports = {
     files_coverage_data: 'files_coverage_data',
     changed_files_coverage_data: 'changed_files_coverage_data',
   },
-  DEFAULT_COMMENT_MARKER: 'report-nyc-coverage-github-action-comment-mark',
+  // DEFAULT_COMMENT_MARKER: 'report-nyc-coverage-github-action-comment-mark',
 };
 
 // 2
@@ -11244,7 +11245,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
-/******/ 	
+/******/
 /******/ 	// The require function
 /******/ 	function __nccwpck_require__(moduleId) {
 /******/ 		// Check if module is in cache
@@ -11258,7 +11259,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
-/******/ 	
+/******/
 /******/ 		// Execute the module function
 /******/ 		var threw = true;
 /******/ 		try {
@@ -11267,16 +11268,16 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 		} finally {
 /******/ 			if(threw) delete __webpack_module_cache__[moduleId];
 /******/ 		}
-/******/ 	
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/ 	
+/******/
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat */
-/******/ 	
+/******/
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
-/******/ 	
+/******/
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
@@ -11291,7 +11292,8 @@ const github = __nccwpck_require__(5438);
 const exec = __nccwpck_require__(1514);
 
 // Module
-const { ActionOutput, InternalToken, ActionInput, DEFAULT_COMMENT_MARKER } = __nccwpck_require__(4438);
+// const { ActionOutput, InternalToken, ActionInput, DEFAULT_COMMENT_MARKER } = __nccwpck_require__(4438);
+const { ActionOutput, InternalToken, ActionInput } = __nccwpck_require__(4438);
 const { replaceTokens } = __nccwpck_require__(1608);
 const { parseCoverageSummaryJSON } = __nccwpck_require__(3248);
 const { formatFilesCoverageDataToHTMLTable } = __nccwpck_require__(5945);
@@ -11362,7 +11364,8 @@ async function run() {
   };
 
   const commentTemplateFilePath = path.resolve(core.getInput(ActionInput.comment_template_file));
-  const commentMark = `<!-- ${DEFAULT_COMMENT_MARKER} -->`;
+  // const commentMark = `<!-- ${DEFAULT_COMMENT_MARKER} -->`;
+  const commentMark = core.getInput(ActionInput.comment_marker);
 
   let commentBody;
   if (commentTemplateFilePath.endsWith('.svelte')) {
