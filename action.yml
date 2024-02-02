@@ -17,6 +17,10 @@ inputs:
     description: '"replace" or "new"'
     default: 'replace'
     required: false
+  comment_marker:
+    description: 'The unique marker used to leave the PR comment. Update to run multiple NYC reports in a single PR'
+    default: 'report-nyc-coverage-github-action-comment-mark'
+    required: false
   github_token:
     description: 'An alternative GitHub token, other than the default provided by GitHub Actions runner. Optional.'
     default: ${{ github.token }}
