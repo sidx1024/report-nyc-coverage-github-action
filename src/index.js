@@ -80,7 +80,7 @@ async function run() {
   };
 
   const commentTemplateFilePath = path.resolve(core.getInput(ActionInput.comment_template_file));
-  const commentMark = core.getInput(ActionInput.comment_marker);
+  const commentMark = `<!-- ${core.getInput(ActionInput.comment_marker)} -->`;
   // const commentMark = `<!-- ${DEFAULT_COMMENT_MARKER} -->`;
 
   let commentBody;
