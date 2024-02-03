@@ -11291,7 +11291,6 @@ const github = __nccwpck_require__(5438);
 const exec = __nccwpck_require__(1514);
 
 // Module
-// const { ActionOutput, InternalToken, ActionInput, DEFAULT_COMMENT_MARKER } = __nccwpck_require__(4438);
 const { ActionOutput, InternalToken, ActionInput } = __nccwpck_require__(4438);
 const { replaceTokens } = __nccwpck_require__(1608);
 const { parseCoverageSummaryJSON } = __nccwpck_require__(3248);
@@ -11363,7 +11362,7 @@ async function run() {
   };
 
   const commentTemplateFilePath = path.resolve(core.getInput(ActionInput.comment_template_file));
-  const commentMark = core.getInput(ActionInput.comment_marker);
+  const commentMark = `<!-- ${core.getInput(ActionInput.comment_marker)} -->`;
 
   let commentBody;
   if (commentTemplateFilePath.endsWith('.svelte')) {
