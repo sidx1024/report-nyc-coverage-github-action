@@ -54,7 +54,6 @@ module.exports = {
     files_coverage_data: 'files_coverage_data',
     changed_files_coverage_data: 'changed_files_coverage_data',
   },
-  // DEFAULT_COMMENT_MARKER: 'report-nyc-coverage-github-action-comment-mark',
 };
 
 // 2

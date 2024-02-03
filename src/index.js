@@ -8,7 +8,6 @@ const github = require('@actions/github');
 const exec = require('@actions/exec');
 
 // Module
-// const { ActionOutput, InternalToken, ActionInput, DEFAULT_COMMENT_MARKER } = require('./constants');
 const { ActionOutput, InternalToken, ActionInput } = require('./constants');
 const { replaceTokens } = require('./utils');
 const { parseCoverageSummaryJSON } = require('./parse');
@@ -81,7 +80,6 @@ async function run() {
 
   const commentTemplateFilePath = path.resolve(core.getInput(ActionInput.comment_template_file));
   const commentMark = `<!-- ${core.getInput(ActionInput.comment_marker)} -->`;
-  // const commentMark = `<!-- ${DEFAULT_COMMENT_MARKER} -->`;
 
   let commentBody;
   if (commentTemplateFilePath.endsWith('.svelte')) {

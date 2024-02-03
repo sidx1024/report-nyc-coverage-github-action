@@ -10774,7 +10774,6 @@ module.exports = {
     files_coverage_data: 'files_coverage_data',
     changed_files_coverage_data: 'changed_files_coverage_data',
   },
-  // DEFAULT_COMMENT_MARKER: 'report-nyc-coverage-github-action-comment-mark',
 };
 
 // 2
@@ -11364,7 +11363,6 @@ async function run() {
   };
 
   const commentTemplateFilePath = path.resolve(core.getInput(ActionInput.comment_template_file));
-  // const commentMark = `<!-- ${DEFAULT_COMMENT_MARKER} -->`;
   const commentMark = core.getInput(ActionInput.comment_marker);
 
   let commentBody;
